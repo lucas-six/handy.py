@@ -1,0 +1,40 @@
+#!/usr/bin/env python
+
+'''Unit Testing for pylib.
+
+
+Copyright (c) 2015 Li Yun <leven.cn@gmail.com>
+All Rights Reserved.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+'''
+
+import unittest
+
+try:
+    import pylib
+except:
+    import sys
+    sys.path.append('..')
+    import pylib
+
+
+class GeneralTestCase(pylib.GeneralTestCase):
+
+    def setUp(self):
+        super(GeneralTestCase, self).setUp()
+        self.test_modules = [__file__, '../pylib.py']
+
+
+if __name__ == '__main__':
+    unittest.main(verbosity=2, catchbreak=True)
