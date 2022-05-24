@@ -79,13 +79,12 @@ following commands from a Windows terminal:
 
 The code is formatted by `black`<!-- and `isort`-->.
 
-<!-- The repository is equipped with a [`pre-commit.ci`](https://pre-commit.ci/)
+The repository is equipped with a [`pre-commit.ci`](https://pre-commit.ci/)
 configuration file. This means that you don't *need* to do anything yourself to
 run the code formatters. When you push a commit, a bot will run those for you
 right away and add a commit to your PR. Neat, no?
 
-That being said, -->
-If you *want* to run the checks locally when you commit, you
+That being said, if you *want* to run the checks locally when you commit, you
 can install the hooks: please refer to the [pre-commit](https://pre-commit.com/)
 documentation.
 
