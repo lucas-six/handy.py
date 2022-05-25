@@ -1,0 +1,58 @@
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "handy.py"
+description = "A collection of handy utils for Python."
+authors = [
+    {name = "Li Yun", email = "leven.cn@gmail.com"},
+]
+readme = "README.md"
+requires-python = "~=3.9"
+license = {file = "LICENSE"}
+maintainers = [
+    {name = "Li Yun", email = "leven.cn@gmail.com"},
+]
+keywords = ["Python"]
+classifiers = [
+    ; "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: Apache License 2.0",
+]
+dependencies = [
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+test = [
+    "pre-commit",
+    "black"
+]
+doc = [
+    "sphinx"
+]
+
+[project.urls]
+Documentation = "https://github.com/leven-cn/handy.py"
+Source = "https://github.com/leven-cn/handy.py"
+Home = "https://github.com/leven-cn/handy.py"
+
+[tool.flit.module]
+name = "handy_utils"
+
+[tool.flit.sdist]
+include = ["doc/"]
+exclude = ["doc/*.html"]
+
+[tool.black]
+line-length = 88
+target-version = ['py39']
+include = '\.pyi?$'
+extend-exclude = '''
+# A regex preceded with ^/ will apply only to files and directories
+# in the root of the project.
+^/.github/workflows/*.yml
+'''
