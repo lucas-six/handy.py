@@ -36,6 +36,7 @@ test = [
     "black",
     "isort",
     "mymy",
+    "flake8 >= 4.0",
 ]
 doc = [
     "sphinx"
@@ -74,3 +75,6 @@ exclude = [
     '^file1\.py$',  # TOML literal string (single-quotes, no escaping necessary)
     "^file2\\.py$",  # TOML basic string (double-quotes, backslash and other characters need escaping)
 ]
+
+[tool.flake8]
+max_complexity = 20
