@@ -6,7 +6,7 @@ on:
     branches: [main, develop]
 
   schedule:
-  - cron: "0 18 * * 1-5"
+  - cron: '0 18 * * 1-5'
 
 jobs:
   pre-commit:
@@ -28,3 +28,8 @@ jobs:
     - name: Install dependencies
       run: pipenv sync
     - uses: pre-commit/action@v2.0.3
+    - name: Lint Markdown
+        uses: nosborn/github-action-markdown-cli@v3.0.1
+        with:
+          files: '*.md'
+          config_file: .markdownlintrc.json
