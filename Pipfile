@@ -9,6 +9,7 @@ name = "pypi"
 black = "*"
 pre-commit = "*"
 isort = "*"
+mypy = "*"
 
 [requires]
 python_version = "3.9"
