@@ -42,8 +42,8 @@ To install the necessary requirements, run the following commands from a
 terminal window:
 
 ```bash
-pip install -U pip
-pip install pipenv
+pip install -U pip pipx
+pipx install pipenv
 
 pipenv sync
 pipenv install --dev
@@ -68,8 +68,8 @@ To install all non-pytype requirements on Windows without WSL, run the
 following commands from a Windows terminal:
 
 ```bash
-> python3 -m pip install -U pip
-> python3 -m pip install pipenv
+> python3 -m pip install -U pip pipx
+> pipx install pipenv
 
 > pipenv sync
 > pipenv install --dev
@@ -87,6 +87,10 @@ right away and add a commit to your PR. Neat, no?
 That being said, if you *want* to run the checks locally when you commit, you
 can install the hooks: please refer to the [pre-commit](https://pre-commit.com/)
 documentation.
+
+```bash
+pipenv run pre-commit run --all-files
+```
 
 ## Submitting changes
 
