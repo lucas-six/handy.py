@@ -37,6 +37,7 @@ test = [
     "isort",
     "mymy",
     "flake8 >= 4.0",
+    "pyupgrade",
 ]
 doc = [
     "sphinx"

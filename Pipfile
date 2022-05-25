@@ -11,6 +11,7 @@ pre-commit = "*"
 isort = "*"
 mypy = "*"
 flake8 = ">=4.0"
+pyupgrade = "*"
 
 [requires]
 python_version = "3.9"
