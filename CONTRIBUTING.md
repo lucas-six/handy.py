@@ -17,7 +17,7 @@ it takes a bit longer. For more details, read below.
 ### Code away
 
 HandyPy runs continuous integration (CI) on all pull requests. This will
-automatically fix formatting (using [`black`](https://black.readthedocs.io/en/stable/)<!--, `isort`-->)<!-- and run tests -->.
+automatically fix formatting (using [`black`](https://black.readthedocs.io/en/stable/), [`isort`](https://pycqa.github.io/isort/))<!-- and run tests -->.
 It means you can ignore all local setup on your side, focus on the
 code and rely on the CI to fix everything, or point you to the places that
 need fixing.
@@ -77,7 +77,7 @@ following commands from a Windows terminal:
 
 ## Formatting the code
 
-The code is formatted by `black`<!-- and `isort`-->.
+The code is formatted by `black` and `isort`.
 
 The repository is equipped with a [`pre-commit.ci`](https://pre-commit.ci/)
 configuration file. This means that you don't *need* to do anything yourself to

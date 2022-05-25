@@ -33,7 +33,8 @@ dynamic = ["version"]
 [project.optional-dependencies]
 test = [
     "pre-commit",
-    "black"
+    "black",
+    "isort",
 ]
 doc = [
     "sphinx"
@@ -60,3 +61,6 @@ extend-exclude = '''
 # in the root of the project.
 ^/.github/workflows/*.yml
 '''
+
+[tool.isort]
+profile = "black"
