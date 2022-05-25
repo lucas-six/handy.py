@@ -113,8 +113,9 @@ To get your pull request merged sooner, you should explain why you are
 making the change. It is also helpful to add links to online
 documentation or to the implementation of the code you are changing.
 
-Also, do not squash your commits or use `git commit --amend` after you have submitted a pull request, as this
-erases context during review. We will squash commits when the pull request is merged.
+Also, do not squash your commits or use `git commit --amend`
+after you have submitted a pull request, as this erases context during review.
+We will squash commits when the pull request is merged.
 This way, your pull request will appear as a single commit in our git history, even
 if it consisted of several smaller commits.
 

@@ -3,28 +3,39 @@ name: Lint
 on:
   pull_request:
   push:
-    branches: [main, develop]
+    branches: [develop]
 
   schedule:
-  - cron: "0 18 * * 1-5"
+    - cron: '0 18 * * 1-5'
 
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Install pipenv
-      run: |
-        pip install -U pip pipx
-        pipx install pipenv
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.9'
-        architecture: 'x64'
-        cache: 'pipenv'
-    - name: Display Python version
-      run: python --version
-    - name: Install dependencies
-      run: pipenv sync
-    - uses: pre-commit/action@v2.0.3
+      - uses: actions/checkout@v3
+      - name: Install pipenv
+        run: |
+          pip install -U pip pipx
+          pipx install pipenv
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.9'
+          architecture: 'x64'
+          cache: 'pipenv'
+      - name: Display Python version
+        run: python --version
+      - name: Install dependencies
+        run: pipenv sync
+      - name: Run pre-commit
+        uses: pre-commit/action@v2.0.3
+
+  lint-markdown:
+    name: Lint Markdown
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: nosborn/github-action-markdown-cli@v3.0.1
+        with:
+          files: '*.md'
+          config_file: .markdownlintrc.json
