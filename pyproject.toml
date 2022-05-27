@@ -58,6 +58,7 @@ exclude = ["doc/*.html"]
 [tool.black]
 line-length = 88
 target-version = ['py39']
+skip-string-normalization = true
 include = '\.pyi?$'
 extend-exclude = '''
 # A regex preceded with ^/ will apply only to files and directories
