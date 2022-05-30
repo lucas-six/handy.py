@@ -38,6 +38,7 @@ test = [
     "mymy",
     "flake8 >= 4.0",
     "pyupgrade",
+    "pytest >= 7.1",
 ]
 doc = [
     "sphinx"
@@ -80,3 +81,10 @@ exclude = [
 
 [tool.flake8]
 max_complexity = 20
+
+[tool.pytest.ini_options]
+markers = [
+]
+addopts = [
+    "--strict-markers"
+]
