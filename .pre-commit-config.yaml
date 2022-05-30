@@ -16,6 +16,8 @@ repos:
       - id: fix-byte-order-marker
       - id: detect-private-key
       - id: double-quote-string-fixer
+      - id: name-tests-test
+        args: [--django]
   - repo: https://github.com/psf/black
     rev: 22.3.0
     hooks:
