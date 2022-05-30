@@ -39,6 +39,8 @@ test = [
     "flake8 >= 4.0",
     "pyupgrade",
     "pytest >= 7.1",
+    "coverage >= 6.4",
+    "pytest-cov >= 3.0",
 ]
 doc = [
     "sphinx"
@@ -86,5 +88,13 @@ max_complexity = 20
 markers = [
 ]
 addopts = [
-    "--strict-markers"
+    "--strict-markers",
+    "--cov",
+    "--cov-append",
 ]
+
+[tool.coverage.run]
+parallel = true
+
+[tool.coverage.report]
+skip_empty = true

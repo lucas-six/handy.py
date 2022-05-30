@@ -13,6 +13,8 @@ mypy = "*"
 flake8 = ">=4.0"
 pyupgrade = "*"
 pytest = ">=7.1"
+pytest-cov = ">=3.0"
+coverage = {version = ">=6.4", extras = ["toml"]}
 
 [requires]
 python_version = "3.9"
