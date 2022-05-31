@@ -1,6 +1,6 @@
 import string
 
-from src import ispunctuation
+from src.handy import ispunctuation
 
 
 class TestHandy:

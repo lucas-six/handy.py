@@ -1,6 +1,6 @@
-# Contributing to HandyPy (handy.py)
+# Contributing to HandyPy
 
-Welcome! `handy.py` is a collection utils for Python.
+Welcome! `handy.py` is a collection of handy utils for Python.
 
 ## The contribution process at a glance
 
@@ -17,14 +17,15 @@ it takes a bit longer. For more details, read below.
 ### Code away
 
 HandyPy runs continuous integration (CI) on all pull requests. This will
-automatically fix formatting (using [`black`](https://black.readthedocs.io/en/stable/), [`isort`](https://pycqa.github.io/isort/))<!-- and run tests -->.
+automatically fix formatting (using [`black`](https://black.readthedocs.io/en/stable/),
+[`isort`](https://pycqa.github.io/isort/)) and run tests.
 It means you can ignore all local setup on your side, focus on the
 code and rely on the CI to fix everything, or point you to the places that
 need fixing.
 
 ### ... Or create a local development environment
 
-If you prefer to run the <!-- tests & -->formatting locally, it's
+If you prefer to run the tests formatting locally, it's
 possible too. Follow platform-specific instructions below.
 <!-- For more information about our available tests, see
 [tests/README.md](tests/README.md). -->
@@ -61,7 +62,7 @@ If you do not wish to install WSL, you will not be able to run the pytype
 tests, as pytype
 [does not currently support running on Windows](https://github.com/google/pytype#requirements).
 However, the upside of this is that you will be able to run all
-Windows-compatible tests on Python 3.9, 3.8 or 3.10, as it is only the pytype
+Windows-compatible tests on Python 3.9, or 3.10, as it is only the pytype
 tests that cannot currently be run on 3.10.
 
 To install all non-pytype requirements on Windows without WSL, run the
