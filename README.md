@@ -6,6 +6,26 @@
 
 Collection of handy utils for Python.
 
+## Usage
+
+```bash
+pip install handy-utils
+```
+
+```python
+from handy_utils import xxx
+```
+
+## Features
+
+## Scripts
+
+### Run a GUI (based on Tcl/Tk) for RE (regular expression)
+
+```bash
+python -m handy_utils.re_tk
+```
+
 ## License
 
 [Apache License 2.0](https://github.com/leven-cn/handy.py/blob/master/LICENSE)
