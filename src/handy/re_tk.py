@@ -4,8 +4,8 @@ The original script is from CPython.
 <https://github.com/python/cpython/blob/master/Tools/demo/redemo.py>
 """
 
-import tkinter
 import re
+import tkinter
 from typing import Pattern, Union
 
 
@@ -76,7 +76,7 @@ class ReTK:
         self.string_display.pack(fill=tkinter.BOTH, expand=True)
         self.string_display.tag_configure('hit', background=self.string_background)
 
-        self.group_label = tkinter.Label(self.tk, text="Groups:", anchor=tkinter.W)
+        self.group_label = tkinter.Label(self.tk, text='Groups:', anchor=tkinter.W)
         self.group_label.pack(fill=tkinter.X)
 
         self.group_list = tkinter.Listbox(self.tk)
@@ -151,8 +151,8 @@ class ReTK:
         if not self.compiled:
             return
         self.string_display.tag_configure('hit', background=self.string_hit_background)
-        self.string_display.tag_configure("hit0", background=self.string_background)
-        text = self.string_display.get("1.0", tkinter.END)
+        self.string_display.tag_configure('hit0', background=self.string_background)
+        text = self.string_display.get('1.0', tkinter.END)
         last = 0
         nmatches = 0
         while last <= len(text):
@@ -173,10 +173,9 @@ class ReTK:
                 groups = list(m.groups())
                 groups.insert(0, m.group())
                 for i in range(len(groups)):
-                    g = "%2d: %r" % (i, groups[i])
-                    self.group_list.insert(tkinter.END, g)
+                    self.group_list.insert(tkinter.END, f'{i:=2}: {groups[i]}')
             nmatches = nmatches + 1
-            if self.showvar.get() == "first":
+            if self.showvar.get() == 'first':
                 break
 
         if nmatches == 0:
