@@ -1,11 +1,10 @@
+import random
 import re
 import string
-import random
 
 import pytest
 
-from src.handy import find_chinese_characters, is_domain_en, ispunctuation
-from src.handy import re_pattern
+from src.handy import find_chinese_characters, is_domain_en, ispunctuation, re_pattern
 
 
 class TestHandy:
