@@ -1,4 +1,17 @@
+import re
 import string
+from collections.abc import Iterator
+from typing import Union
+
+from .re_pattern import CN_CHAR
+
+
+def find_chinese_characters(
+    s: str, iterred: bool = True
+) -> Union[Iterator[re.Match[str]], list[str]]:
+    """Find Chinese characters."""
+    p = re.compile(CN_CHAR)
+    return p.finditer(s) if iterred else p.findall(s)
 
 
 def ispunctuation(s: str) -> bool:
