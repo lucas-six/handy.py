@@ -18,6 +18,8 @@ from handy_utils import xxx
 
 ## Features
 
+- Find Chinese characters in a string.
+
 ## Scripts
 
 ### Run a GUI (based on Tcl/Tk) for RE (regular expression)

@@ -1,7 +1,7 @@
 """Collection of handy utils for Python."""
 
-from ._handy import ispunctuation
+from ._handy import find_chinese_characters, ispunctuation
 
-__version__ = '0.0.1-alpha'
+__version__ = '0.0.1-alpha.1'
 
-__all__ = ['ispunctuation']
+__all__ = ['find_chinese_characters', 'ispunctuation']
