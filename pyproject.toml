@@ -93,6 +93,15 @@ addopts = [
     "--strict-markers",
     "--cov",
     "--cov-append",
+    "--durations=5",
+    "--durations-min=1.2",
+]
+norecursedirs = [
+    ".git",
+    ".*_cache",
+    ".tox",
+    "*.egg-info",
+    "docs",
 ]
 
 [tool.coverage.run]
