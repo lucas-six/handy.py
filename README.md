@@ -19,7 +19,7 @@ from handy_utils import xxx
 ## Features
 
 - Find Chinese characters in a string.
-- Check whether a string is English domain name.
+- Domain name validation (support English, Chinese).
 
 ## Scripts
 
