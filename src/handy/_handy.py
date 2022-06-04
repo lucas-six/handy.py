@@ -14,8 +14,8 @@ def find_chinese_characters(
     return p.finditer(s) if iterred else p.findall(s)
 
 
-def is_domain_name_en(s: str) -> bool:
-    """Whether string `s` is english domain name."""
+def validate_domain_name_en(s: str) -> bool:
+    """English domain name validator."""
     p = re.compile(DOMAIN_NAME_EN + r'$', re.IGNORECASE)
     m = p.match(s)
     if m:

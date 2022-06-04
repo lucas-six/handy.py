@@ -6,9 +6,9 @@ import pytest
 
 from src.handy import (
     find_chinese_characters,
-    is_domain_name_en,
     ispunctuation,
     re_pattern,
+    validate_domain_name_en,
 )
 
 
@@ -44,13 +44,13 @@ class TestHandy:
             ('abc123!@#', False),
         ),
     )
-    def test_is_domain_name_en_without_dot(self, s: str, expected: bool):
-        self._assert_domain_name_en(s, expected)
+    def test_validate_domain_name_en_without_dot(self, s: str, expected: bool):
+        self._validate_domain_name_en(s, expected)
 
-    def test_is_domain_name_en_without_dot_loop(self, loop_times: int):
+    def test_validate_domain_name_en_without_dot_loop(self, loop_times: int):
         while loop_times:
             s = self._gen_domain_name_en_without_dot(loop_times)
-            self._assert_domain_name_en(s, False)
+            self._validate_domain_name_en(s, False)
             loop_times -= 1
 
     @pytest.mark.parametrize(
@@ -72,13 +72,13 @@ class TestHandy:
             ('abc123!@#..', False),
         ),
     )
-    def test_is_domain_name_en_ends_with_dot(self, s: str, expected: bool):
-        self._assert_domain_name_en(s, expected)
+    def test_validate_domain_name_en_ends_with_dot(self, s: str, expected: bool):
+        self._validate_domain_name_en(s, expected)
 
-    def test_is_domain_name_en_ends_ends_with_dot_loop(self, loop_times: int):
+    def test_validate_domain_name_en_ends_ends_with_dot_loop(self, loop_times: int):
         while loop_times:
             s = self._gen_domain_name_en_ends_with_dot(loop_times)
-            self._assert_domain_name_en(s, False)
+            self._validate_domain_name_en(s, False)
             loop_times -= 1
 
     @pytest.mark.parametrize(
@@ -96,8 +96,8 @@ class TestHandy:
             ('a.ddd', True),
         ),
     )
-    def test_is_domain_name_en_ends_with_one(self, s: str, expected: bool):
-        self._assert_domain_name_en(s, expected)
+    def test_validate_domain_name_en_ends_with_one(self, s: str, expected: bool):
+        self._validate_domain_name_en(s, expected)
 
     @pytest.mark.parametrize(
         ('s', 'expected'),
@@ -111,8 +111,8 @@ class TestHandy:
             ('a.ab', True),
         ),
     )
-    def test_is_domain_name_en_ends_with_digits(self, s: str, expected: bool):
-        self._assert_domain_name_en(s, expected)
+    def test_validate_domain_name_en_ends_with_digits(self, s: str, expected: bool):
+        self._validate_domain_name_en(s, expected)
 
     @pytest.mark.parametrize(
         ('s', 'expected'),
@@ -126,8 +126,8 @@ class TestHandy:
             ('a-b-c.org-', False),
         ),
     )
-    def test_is_domain_name_en_contains_dots(self, s: str, expected: bool):
-        self._assert_domain_name_en(s, expected)
+    def test_validate_domain_name_en_contains_dots(self, s: str, expected: bool):
+        self._validate_domain_name_en(s, expected)
 
     @pytest.mark.parametrize(
         ('s', 'expected'),
@@ -149,8 +149,8 @@ class TestHandy:
             ),
         ),
     )
-    def test_is_domain_en_len(self, s: str, expected: bool):
-        self._assert_domain_name_en(s, expected)
+    def test_validate_domain_en_len(self, s: str, expected: bool):
+        self._validate_domain_name_en(s, expected)
 
     def test_ispunctuation(self):
         assert not ispunctuation('')
@@ -181,8 +181,8 @@ class TestHandy:
             )
         ) + '.' * random.randint(1, (re_pattern.DOMAIN_NAME_EN_MAX_LEN - 1) // 2)
 
-    def _assert_domain_name_en(self, s: str, expected: bool):
-        result = is_domain_name_en(s)
+    def _validate_domain_name_en(self, s: str, expected: bool):
+        result = validate_domain_name_en(s)
         if expected:
             assert result
         else:
