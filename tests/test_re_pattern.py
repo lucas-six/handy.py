@@ -1,6 +1,6 @@
+import random
 import re
 import string
-import random
 
 import pytest
 
