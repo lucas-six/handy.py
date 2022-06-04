@@ -1,6 +1,6 @@
-import random
 import re
 import string
+import random
 
 import pytest
 
@@ -25,292 +25,98 @@ class TestRePattern:
         assert p.findall(s) == expected
 
     @pytest.mark.parametrize(
-        ('s', 'times', 'expected'),
+        ('s', 'expected'),
         (
-            ('abc', 1, False),
+            ('abc', False),
+            ('123', False),
+            ('!@#', False),
+            ('abc123', False),
+            ('abc!@#', False),
+            ('123!@#', False),
+            ('abc123!@#', False),
+            ('abc.', False),
+            ('123.', False),
+            ('!@#.', False),
+            ('abc123.', False),
+            ('abc!@#.', False),
+            ('123!@#.', False),
+            ('abc123!@#.', False),
+            ('abc..', False),
+            ('123..', False),
+            ('!@#..', False),
+            ('abc123..', False),
+            ('abc!@#..', False),
+            ('123!@#..', False),
+            ('abc123!@#..', False),
+            ('abc.d', False),
+            ('123.d', False),
+            ('abc123.d', False),
+            ('abc.dd', True),
+            ('123.dd', True),
+            ('abc123.dd', True),
+            ('abc.ddd', True),
+            ('123.ddd', True),
+            ('abc123.ddd', True),
+            ('a.ddd', True),
+            ('a.1', False),
+            ('a.12', False),
+            ('a.123', False),
+            ('a.1a', False),
+            ('a.a1', False),
+            ('a.a1b', False),
+            ('a.ab', True),
+            ('-abc.org', False),
+            ('abc-.org', False),
+            ('a-bc.org', True),
+            ('a-b-c.org', True),
+            ('a-b-c.-org', False),
+            ('a-b-c.o-rg', False),
+            ('a-b-c.org-', False),
             (
                 ''.join(
-                    random.choices(
-                        string.printable.replace('.', ''),
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                ),
-                10000,
-                False,
-            ),
-            ('abc.', 1, False),
-            (
-                ''.join(
-                    random.choices(
-                        string.printable.replace('.', ''),
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                )
-                + '.',
-                10000,
-                False,
-            ),
-            ('abc..', 1, False),
-            (
-                ''.join(
-                    random.choices(
-                        string.printable.replace('.', ''),
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                )
-                + '..',
-                10000,
-                False,
-            ),
-            ('abc.d', 1, False),
-            (
-                ''.join(
-                    random.choices(
-                        string.ascii_letters,
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                )
-                + '.'
-                + random.choice(string.ascii_letters),
-                10000,
-                False,
-            ),
-            ('abc$;.dd', 1, False),
-            (
-                ''.join(
-                    random.choices(
-                        string.printable.replace('.', ''),
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                )
-                + ''.join(
-                    random.choices(
-                        string.punctuation.replace('.', ''),
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                )
-                + '.'
-                + ''.join(random.choices(string.ascii_letters, k=2)),
-                10000,
-                False,
-            ),
-            ('abc.d;', 1, False),
-            (
-                ''.join(
-                    random.choices(
-                        string.ascii_letters,
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                )
-                + '.'
-                + random.choice(string.printable.replace('.', ''))
-                + random.choice(string.punctuation),
-                10000,
-                False,
-            ),
-            ('123abc.dd', 1, True),
-            (
-                ''.join(
-                    random.choices(
-                        string.digits,
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                )
-                + ''.join(
                     random.choices(
                         string.ascii_letters + string.digits,
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
+                        k=random.randint(1, 1024),
                     )
                 )
                 + '.'
-                + ''.join(random.choices(string.ascii_letters, k=2)),
-                10000,
+                + ''.join(
+                    random.choices(string.ascii_letters, k=random.randint(2, 1024))
+                ),
                 True,
             ),
-            ('123.dd', 1, True),
-            (
-                ''.join(
-                    random.choices(
-                        string.digits,
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                )
-                + '.'
-                + ''.join(random.choices(string.ascii_letters, k=2)),
-                10000,
-                True,
-            ),
-            ('abc.dd', 1, True),
-            (
-                ''.join(
-                    random.choices(
-                        string.ascii_letters,
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                )
-                + ''.join(
-                    random.choices(
-                        string.ascii_letters + string.digits,
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                )
-                + '.'
-                + ''.join(
-                    random.choices(
-                        string.ascii_letters,
-                        k=random.randint(2, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                ),
-                10000,
-                True,
-            ),
-            ('abc.ddd.', 1, False),
-            (
-                ''.join(
-                    random.choices(
-                        string.ascii_letters,
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                )
-                + ''.join(
-                    random.choices(
-                        string.ascii_letters + string.digits,
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                )
-                + '.'
-                + ''.join(
-                    random.choices(
-                        string.ascii_letters,
-                        k=random.randint(2, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                )
-                + '.',
-                10000,
-                False,
-            ),
-            ('abc.12', 1, False),
             (
                 ''.join(
                     random.choices(
                         string.ascii_letters + string.digits,
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                )
-                + '.'
-                + ''.join(
-                    random.choices(
-                        string.digits,
-                        k=random.randint(2, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                )
-                + '.',
-                10000,
-                False,
-            ),
-            ('-abc.org', 1, False),
-            (
-                '-'
-                + ''.join(
-                    random.choices(
-                        string.ascii_letters + string.digits,
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                )
-                + '.'
-                + ''.join(
-                    random.choices(
-                        string.ascii_letters,
-                        k=random.randint(2, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                ),
-                10000,
-                False,
-            ),
-            ('abc-.org', 1, False),
-            (
-                ''.join(
-                    random.choices(
-                        string.ascii_letters + string.digits,
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                )
-                + '-.'
-                + ''.join(
-                    random.choices(
-                        string.ascii_letters,
-                        k=random.randint(2, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                ),
-                10000,
-                False,
-            ),
-            ('a-bc.org', 1, True),
-            (
-                ''.join(
-                    random.choices(
-                        string.ascii_letters + string.digits,
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                )
-                + '-'
-                + ''.join(
-                    random.choices(
-                        string.ascii_letters + string.digits,
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                )
-                + '.'
-                + ''.join(
-                    random.choices(
-                        string.ascii_letters,
-                        k=random.randint(2, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
-                ),
-                10000,
-                True,
-            ),
-            ('a-b-c.org', 1, True),
-            (
-                ''.join(
-                    random.choices(
-                        string.ascii_letters + string.digits,
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
+                        k=random.randint(1, 1024),
                     )
                 )
                 + ''.join(
                     random.choices(
                         string.ascii_letters + string.digits + '-',
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
+                        k=random.randint(1, 1024),
                     )
                 )
                 + ''.join(
                     random.choices(
                         string.ascii_letters + string.digits,
-                        k=random.randint(1, re_pattern.DOMAIN_EN_MAX_LEN),
+                        k=random.randint(1, 1024),
                     )
                 )
                 + '.'
                 + ''.join(
-                    random.choices(
-                        string.ascii_letters,
-                        k=random.randint(2, re_pattern.DOMAIN_EN_MAX_LEN),
-                    )
+                    random.choices(string.ascii_letters, k=random.randint(2, 1024))
                 ),
-                10000,
                 True,
             ),
         ),
     )
-    def test_domain_en(self, s: str, times: int, expected: bool):
-        p = re.compile(re_pattern.DOMAIN_EN + r'$', re.IGNORECASE)
-        while times:
-            if times > 1:
-                random.seed(times)
-            m = p.match(s)
-            if expected:
-                assert isinstance(m, re.Match)
-            else:
-                # not match
-                assert m is None
-            times -= 1
+    def test_domain_en(self, s: str, expected: bool):
+        p = re.compile(re_pattern.DOMAIN_NAME_EN + r'$', re.IGNORECASE)
+        m = p.match(s)
+        if expected:
+            assert isinstance(m, re.Match)
+        else:
+            # not match
+            assert m is None

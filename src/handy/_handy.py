@@ -3,7 +3,7 @@ import string
 from collections.abc import Iterator
 from typing import Union
 
-from .re_pattern import CN_CHAR, DOMAIN_EN, DOMAIN_EN_MAX_LEN
+from .re_pattern import CN_CHAR, DOMAIN_NAME_EN, DOMAIN_NAME_EN_MAX_LEN
 
 
 def find_chinese_characters(
@@ -14,12 +14,12 @@ def find_chinese_characters(
     return p.finditer(s) if iterred else p.findall(s)
 
 
-def is_domain_en(s: str) -> bool:
+def is_domain_name_en(s: str) -> bool:
     """Whether string `s` is english domain name."""
-    p = re.compile(DOMAIN_EN + r'$', re.IGNORECASE)
+    p = re.compile(DOMAIN_NAME_EN + r'$', re.IGNORECASE)
     m = p.match(s)
     if m:
-        return len(s) <= DOMAIN_EN_MAX_LEN
+        return len(s) <= DOMAIN_NAME_EN_MAX_LEN
     return False
 
 

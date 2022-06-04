@@ -94,7 +94,7 @@ addopts = [
     "--cov",
     "--cov-append",
     "--durations=5",
-    "--durations-min=1.2",
+    "--durations-min=0.25",
 ]
 norecursedirs = [
     ".git",
