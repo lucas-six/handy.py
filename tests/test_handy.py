@@ -8,7 +8,7 @@ from src.handy import (
     find_chinese_characters,
     ispunctuation,
     re_pattern,
-    validate_domain_name_en,
+    validate_domain_name,
 )
 
 
@@ -29,6 +29,14 @@ class TestHandy:
             assert m.group() == e
 
     @pytest.fixture
+    def domain_name_max_len_en(self):
+        return re_pattern.DOMAIN_NAMES[re_pattern.LANGUAGE.EN][1]
+
+    @pytest.fixture
+    def domain_name_max_len_cn(self):
+        return re_pattern.DOMAIN_NAMES[re_pattern.LANGUAGE.CN][1]
+
+    @pytest.fixture
     def loop_times(self) -> int:
         return 1000
 
@@ -45,12 +53,14 @@ class TestHandy:
         ),
     )
     def test_validate_domain_name_en_without_dot(self, s: str, expected: bool):
-        self._validate_domain_name_en(s, expected)
+        self._validate_domain_name(s, expected)
 
-    def test_validate_domain_name_en_without_dot_loop(self, loop_times: int):
+    def test_validate_domain_name_en_without_dot_loop(
+        self, loop_times: int, domain_name_max_len_en: int
+    ):
         while loop_times:
-            s = self._gen_domain_name_en_without_dot(loop_times)
-            self._validate_domain_name_en(s, False)
+            s = self._gen_domain_name_en_without_dot(loop_times, domain_name_max_len_en)
+            self._validate_domain_name(s, False)
             loop_times -= 1
 
     @pytest.mark.parametrize(
@@ -73,12 +83,16 @@ class TestHandy:
         ),
     )
     def test_validate_domain_name_en_ends_with_dot(self, s: str, expected: bool):
-        self._validate_domain_name_en(s, expected)
+        self._validate_domain_name(s, expected)
 
-    def test_validate_domain_name_en_ends_ends_with_dot_loop(self, loop_times: int):
+    def test_validate_domain_name_en_ends_ends_with_dot_loop(
+        self, loop_times: int, domain_name_max_len_en: int
+    ):
         while loop_times:
-            s = self._gen_domain_name_en_ends_with_dot(loop_times)
-            self._validate_domain_name_en(s, False)
+            s = self._gen_domain_name_en_ends_with_dot(
+                loop_times, domain_name_max_len_en
+            )
+            self._validate_domain_name(s, False)
             loop_times -= 1
 
     @pytest.mark.parametrize(
@@ -97,7 +111,7 @@ class TestHandy:
         ),
     )
     def test_validate_domain_name_en_ends_with_one(self, s: str, expected: bool):
-        self._validate_domain_name_en(s, expected)
+        self._validate_domain_name(s, expected)
 
     @pytest.mark.parametrize(
         ('s', 'expected'),
@@ -112,7 +126,7 @@ class TestHandy:
         ),
     )
     def test_validate_domain_name_en_ends_with_digits(self, s: str, expected: bool):
-        self._validate_domain_name_en(s, expected)
+        self._validate_domain_name(s, expected)
 
     @pytest.mark.parametrize(
         ('s', 'expected'),
@@ -127,7 +141,7 @@ class TestHandy:
         ),
     )
     def test_validate_domain_name_en_contains_dots(self, s: str, expected: bool):
-        self._validate_domain_name_en(s, expected)
+        self._validate_domain_name(s, expected)
 
     @pytest.mark.parametrize(
         ('s', 'expected'),
@@ -150,7 +164,73 @@ class TestHandy:
         ),
     )
     def test_validate_domain_en_len(self, s: str, expected: bool):
-        self._validate_domain_name_en(s, expected)
+        self._validate_domain_name(s, expected)
+
+    @pytest.mark.parametrize(
+        ('s', 'expected'),
+        (
+            ('纯中文', False),
+            ('abc', False),
+            ('123', False),
+            ('abc中文', False),
+            ('123中文', False),
+            ('纯中文.', False),
+            ('abc.', False),
+            ('123.', False),
+            ('中文abc.', False),
+            ('中文123.', False),
+            ('纯中文..', False),
+            ('abc..', False),
+            ('123..', False),
+            ('中文abc..', False),
+            ('中文123..', False),
+            ('纯中文.d', False),
+            ('abc.d', False),
+            ('123.d', False),
+            ('中文abc.d', False),
+            ('中文123.d', False),
+            ('纯中文.dd', True),
+            ('abc.dd', False),
+            ('123.dd', False),
+            ('中文abc.dd', True),
+            ('中文123.ddd', True),
+            ('纯中文.ab', True),
+            ('纯中文.中文', True),
+            ('中文abc.ab', True),
+            ('中文abc.中文', True),
+            ('中文abc.a中文', False),
+            ('纯中文.a中文', False),
+            ('abc.a中文', False),
+            ('-中文.org', False),
+            ('中文-.org', False),
+            ('a-中文.org', True),
+            ('a-中文-c.org', True),
+            ('a-中文-c.-org', False),
+            ('a-中文-c.o-rg', False),
+            ('a-中文-c.org-', False),
+            ('-中文.中文', False),
+            ('中文-.中文', False),
+            ('a-中文.中文', True),
+            ('a-中文-c.中文', True),
+            ('a-中文-c.-中文', False),
+            ('a-中文-c.中-文', False),
+            ('a-中文-c.中文-', False),
+            (
+                chr(random.randint(ord('\u4E00'), ord('\u9FA5') + 1))
+                * (re_pattern.DOMAIN_NAMES[re_pattern.LANGUAGE.CN][1] - len('.org'))
+                + '.org',
+                True,
+            ),
+            (
+                chr(random.randint(ord('\u4E00'), ord('\u9FA5') + 1))
+                * (re_pattern.DOMAIN_NAMES[re_pattern.LANGUAGE.CN][1] - len('.org') + 1)
+                + '.org',
+                False,
+            ),
+        ),
+    )
+    def test_validate_domain_cn(self, s: str, expected: bool):
+        self._validate_domain_name(s, expected, re_pattern.LANGUAGE.CN)
 
     def test_ispunctuation(self):
         assert not ispunctuation('')
@@ -161,28 +241,33 @@ class TestHandy:
             else:
                 assert not ispunctuation(c)
 
-    def _gen_domain_name_en_without_dot(self, seed: int) -> str:
+    def _gen_domain_name_en_without_dot(self, seed: int, max_len: int) -> str:
         """Generate English domain name without dot."""
         random.seed(seed)
         return ''.join(
             random.choices(
                 string.printable.replace('.', ''),
-                k=random.randint(1, re_pattern.DOMAIN_NAME_EN_MAX_LEN),
+                k=random.randint(1, max_len),
             )
         )
 
-    def _gen_domain_name_en_ends_with_dot(self, seed: int) -> str:
+    def _gen_domain_name_en_ends_with_dot(self, seed: int, max_len: int) -> str:
         """Generate English domain name ending with dot(s)."""
         random.seed(seed)
         return ''.join(
             random.choices(
                 string.printable.replace('.', ''),
-                k=random.randint(1, (re_pattern.DOMAIN_NAME_EN_MAX_LEN - 1) // 2),
+                k=random.randint(1, (max_len - 1) // 2),
             )
-        ) + '.' * random.randint(1, (re_pattern.DOMAIN_NAME_EN_MAX_LEN - 1) // 2)
+        ) + '.' * random.randint(1, (max_len - 1) // 2)
 
-    def _validate_domain_name_en(self, s: str, expected: bool):
-        result = validate_domain_name_en(s)
+    def _validate_domain_name(
+        self,
+        s: str,
+        expected: bool,
+        language: re_pattern.LANGUAGE = re_pattern.LANGUAGE.EN,
+    ):
+        result = validate_domain_name(s, language)
         if expected:
             assert result
         else:

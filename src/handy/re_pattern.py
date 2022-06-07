@@ -1,34 +1,47 @@
 """Regular expression patterns."""
 
+from enum import Enum, IntEnum
 from typing import Final
 
 CN_CHAR: Final[str] = r'[\u4E00-\u9FA5]'
 
-DOMAIN_NAME_EN_MAX_LEN: Final[int] = 67
-DOMAIN_NAME_CN_MAX_LEN: Final[int] = 26
-DOMAIN_NAME_EN: Final[
-    str
-] = r'([a-zA-Z0-9]+)([a-zA-Z0-9-]*[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}'  # 英文域名
-DOMAIN_NAME_CN: Final[str] = (
-    r'('
-    r'[a-zA-Z0-9]'
-    r'|'
-    f'{CN_CHAR}'
-    r')+'
-    r'('
-    r'[a-zA-Z0-9-]'
-    r'|'
-    f'{CN_CHAR}'
-    r')*'
-    r'('
-    r'[a-zA-Z0-9]'
-    r'|'
-    f'{CN_CHAR}'
-    r')+'
-    r'\.'
-    r'('
-    r'[a-zA-Z]{2,}'
-    r'|'
-    f'{CN_CHAR}'
-    r'{2,})'
-)  # 中文域名
+
+class LANGUAGE(Enum):
+    EN = 'en'
+    CN = 'cn'
+
+
+class DomainNameMaxLen(IntEnum):
+    """Max length of domain names."""
+
+    EN = 67
+    CN = 26
+
+
+DOMAIN_NAMES: Final[dict[LANGUAGE, tuple[str, int]]] = {
+    # 英文域名
+    LANGUAGE.EN: (
+        r'([a-zA-Z0-9]+)([a-zA-Z0-9-]*[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}',
+        DomainNameMaxLen.EN,
+    ),
+    # 中文域名
+    LANGUAGE.CN: (
+        (
+            r'('
+            r'[\u4E00-\u9FA5]+([\u4E00-\u9FA5-]*[\u4E00-\u9FA5]+)*'
+            r'|'
+            r'('
+            r'[a-zA-Z0-9\u4E00-\u9FA5]*[\u4E00-\u9FA5]+'
+            r'([a-zA-Z0-9\u4E00-\u9FA5-]*[a-zA-Z0-9\u4E00-\u9FA5]+)*'
+            r'|'
+            r'[a-zA-Z0-9\u4E00-\u9FA5]+'
+            r'([a-zA-Z0-9\u4E00-\u9FA5-]*[a-zA-Z0-9\u4E00-\u9FA5]*)*[\u4E00-\u9FA5]+'
+            r'[a-zA-Z0-9\u4E00-\u9FA5-]*[a-zA-Z0-9\u4E00-\u9FA5]+'
+            r')'
+            r')'
+            r'\.'
+            r'([\u4E00-\u9FA5]{2,}|[a-zA-Z]{2,})'
+        ),
+        DomainNameMaxLen.CN,
+    ),
+}
