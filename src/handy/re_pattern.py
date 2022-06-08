@@ -46,6 +46,9 @@ DOMAIN_NAMES: Final[dict[LANGUAGE, tuple[str, int]]] = {
     ),
 }
 
+# 颜色 RGB 十六进制正则表达式
+RGB_HEX: Final[str] = r'#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})'
+
 # 车牌号
 LICENSE_PLATES: Final[dict[Literal['cn', 'hk'], str]] = {
     'cn': (

@@ -22,6 +22,8 @@ from handy_utils import xxx
 - Find Chinese characters in a string
 - RE pattern of domain name (English, Chinese)
 - Domain name validation (English, Chinese)
+- RE pattern of color RGB hex
+- Color RGB hex validation
 - RE pattern of license plate (Chinese mainland, Hongkong)
 - License plate validation (Chinese mainland, Hongkong)
 - RE pattern of WeChat (Wexin) ID

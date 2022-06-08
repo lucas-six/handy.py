@@ -11,6 +11,7 @@ from src.handy import (
     validate_domain_name,
     validate_license_plate,
     validate_qq_id,
+    validate_rgb_hex,
     validate_wx_id,
 )
 
@@ -234,6 +235,33 @@ class TestHandy:
     )
     def test_validate_domain_cn(self, s: str, expected: bool):
         self._validate_domain_name(s, expected, re_pattern.LANGUAGE.CN)
+
+    @pytest.mark.parametrize(
+        ('s', 'expected'),
+        (
+            ('#123', True),
+            ('#123456', True),
+            ('#1234567', False),
+            ('123', False),
+            ('123456', False),
+            ('#abc', True),
+            ('#abcdef', True),
+            ('#12345', False),
+            ('#fffff', False),
+            ('#FFFFF', False),
+            ('#ABC', True),
+            ('#FFFFFF', True),
+            ('#GGG', False),
+            ('#GGGGGG', False),
+        ),
+    )
+    def test_validate_rgb_hex(self, s: str, expected: bool):
+        result = validate_rgb_hex(s)
+        if expected:
+            assert result
+        else:
+            # not match
+            assert not result
 
     @pytest.mark.parametrize(
         ('s', 'expected'),
