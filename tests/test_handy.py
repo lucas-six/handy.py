@@ -13,6 +13,7 @@ from src.handy import (
     validate_float_number,
     validate_license_plate,
     validate_password_strength,
+    validate_phone_cn,
     validate_qq_id,
     validate_rgb_hex,
     validate_wx_id,
@@ -447,6 +448,31 @@ class TestHandy:
     )
     def test_validate_qq_id(self, s: str, expected: bool):
         result = validate_qq_id(s)
+        if expected:
+            assert result
+        else:
+            # not match
+            assert not result
+
+    @pytest.mark.parametrize(
+        ('s', 'expected'),
+        (
+            ('13800000000', True),
+            ('13900000000', True),
+            ('13600000000', True),
+            ('13500000000', True),
+            ('13400000000', True),
+            ('18600000000', True),
+            ('18500000000', True),
+            ('18900000000', True),
+            ('17500000000', True),
+            ('17700000000', True),
+            ('138000000000', False),
+            ('11100000000', False),
+        ),
+    )
+    def test_validate_phone_cn(self, s: str, expected: bool):
+        result = validate_phone_cn(s)
         if expected:
             assert result
         else:

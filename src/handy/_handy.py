@@ -10,6 +10,7 @@ from .re_pattern import (
     FLOAT_NUMBER,
     LANGUAGE,
     LICENSE_PLATES,
+    PHONE_CN,
     QQ_ID,
     RGB_HEX,
     WX_ID,
@@ -77,6 +78,11 @@ def validate_wx_id(s: str) -> bool:
 def validate_qq_id(s: str) -> bool:
     """QQ ID validator."""
     return _validate_by_regex(s, QQ_ID)
+
+
+def validate_phone_cn(s: str) -> bool:
+    """Chinese phone number validator."""
+    return _validate_by_regex(s, PHONE_CN)
 
 
 def ispunctuation(s: str) -> bool:
