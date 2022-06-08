@@ -3,6 +3,10 @@
 from enum import Enum, IntEnum
 from typing import Final, Literal
 
+# 浮点数
+FLOAT_NUMBER: Final[str] = r'-?\d+(\.\d+)?'
+
+# 中文字符
 CN_CHAR: Final[str] = r'[\u4E00-\u9FA5]'
 
 
@@ -58,11 +62,11 @@ LICENSE_PLATES: Final[dict[Literal['cn', 'hk'], str]] = {
         r'[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z]'
         r'[A-Z0-9]{6}$'  # 新能源
     ),
-    'hk': r'[A-Z]{2}[0-9]{3,4}',  # 香港
+    'hk': r'[A-Z]{2}\d{3,4}',  # 香港
 }
 
 # 微信号正则表达式，6至20位，以字母开头，字母，数字，减号，下划线
 WX_ID: Final[str] = r'[a-zA-Z][a-zA-Z0-9_-]{5,19}'
 
 # QQ号正则表达式，5至11位数字
-QQ_ID: Final[str] = r'[1-9][0-9]{4,10}'
+QQ_ID: Final[str] = r'[1-9]\d{4,10}'

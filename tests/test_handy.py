@@ -9,6 +9,7 @@ from src.handy import (
     ispunctuation,
     re_pattern,
     validate_domain_name,
+    validate_float_number,
     validate_license_plate,
     validate_password_strength,
     validate_qq_id,
@@ -32,6 +33,26 @@ class TestHandy:
         for m, e in zip(find_chinese_characters(s), expected):
             assert isinstance(m, re.Match)
             assert m.group() == e
+
+    @pytest.mark.parametrize(
+        ('s', 'expected'),
+        (
+            ('12', True),
+            ('12.', False),
+            ('12.1', True),
+            ('-12.1', True),
+            ('-12', True),
+            ('0', True),
+            ('0.0', True),
+        ),
+    )
+    def test_validate_float_number(self, s: str, expected: bool):
+        result = validate_float_number(s)
+        if expected:
+            assert result
+        else:
+            # not match
+            assert not result
 
     @pytest.fixture
     def domain_name_max_len_en(self):

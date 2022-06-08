@@ -21,8 +21,31 @@ class TestRePattern:
         s: str,
         expected: list[str],
     ):
-        p = re.compile(re_pattern.CN_CHAR)
-        assert p.findall(s) == expected
+        assert re.findall(re_pattern.CN_CHAR, s) == expected
+
+    @pytest.mark.parametrize(
+        ('s', 'expected'),
+        (
+            ('12', True),
+            ('12.', False),
+            ('12.1', True),
+            ('-12.1', True),
+            ('-12', True),
+            ('0', True),
+            ('0.0', True),
+        ),
+    )
+    def test_float_number(
+        self,
+        s: str,
+        expected: list[str],
+    ):
+        m = re.match(r'(' + re_pattern.FLOAT_NUMBER + r')$', s)
+        if expected:
+            assert isinstance(m, re.Match)
+        else:
+            # not match
+            assert m is None
 
     @pytest.mark.parametrize(
         ('s', 'expected'),
@@ -113,11 +136,11 @@ class TestRePattern:
         ),
     )
     def test_domain_name_en(self, s: str, expected: bool):
-        p = re.compile(
+        m = re.match(
             r'(' + re_pattern.DOMAIN_NAMES[re_pattern.LANGUAGE.EN][0] + r')$',
+            s,
             re.IGNORECASE,
         )
-        m = p.match(s)
         if expected:
             assert isinstance(m, re.Match)
         else:

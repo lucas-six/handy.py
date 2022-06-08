@@ -6,6 +6,7 @@ from typing import Literal, Union
 from .re_pattern import (
     CN_CHAR,
     DOMAIN_NAMES,
+    FLOAT_NUMBER,
     LANGUAGE,
     LICENSE_PLATES,
     QQ_ID,
@@ -22,11 +23,15 @@ def find_chinese_characters(
     return p.finditer(s) if iterred else p.findall(s)
 
 
+def validate_float_number(s: str) -> bool:
+    m = re.match(r'(' + FLOAT_NUMBER + r')$', s)
+    return m is not None
+
+
 def validate_domain_name(s: str, language: LANGUAGE = LANGUAGE.EN) -> bool:
     """Domain name validator."""
     dn = DOMAIN_NAMES[language]
-    p = re.compile(r'(' + dn[0] + r')$', re.IGNORECASE)
-    m = p.match(s)
+    m = re.match(r'(' + dn[0] + r')$', s, re.IGNORECASE)
     if m:
         return len(s) <= dn[1]
     return False
@@ -34,8 +39,7 @@ def validate_domain_name(s: str, language: LANGUAGE = LANGUAGE.EN) -> bool:
 
 def validate_rgb_hex(s: str) -> bool:
     """Color RGB hex validator."""
-    p = re.compile(r'(' + RGB_HEX + r')$')
-    m = p.match(s)
+    m = re.match(r'(' + RGB_HEX + r')$', s)
     return m is not None
 
 
@@ -46,33 +50,30 @@ def validate_password_strength(s: str, min_len: int) -> bool:
     """
     if min_len < 2:
         raise ValueError('minimal length of password must greater than 1')
-    p = re.compile(
+    m = re.match(
         r'.*(?=.{'
         + str(min_len)
-        + r',})(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*? ]).*$'
+        + r',})(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*? ]).*$',
+        s,
     )
-    m = p.match(s)
     return m is not None
 
 
 def validate_license_plate(s: str, region: Literal['cn', 'hk']) -> bool:
     """License plate validator."""
-    p = re.compile(r'(' + LICENSE_PLATES[region] + r')$')
-    m = p.match(s)
+    m = re.match(r'(' + LICENSE_PLATES[region] + r')$', s)
     return m is not None
 
 
 def validate_wx_id(s: str) -> bool:
     """Wechat(Wexin) ID validator."""
-    p = re.compile(r'(' + WX_ID + r')$')
-    m = p.match(s)
+    m = re.match(r'(' + WX_ID + r')$', s)
     return m is not None
 
 
 def validate_qq_id(s: str) -> bool:
     """QQ ID validator."""
-    p = re.compile(r'(' + QQ_ID + r')$')
-    m = p.match(s)
+    m = re.match(r'(' + QQ_ID + r')$', s)
     return m is not None
 
 
