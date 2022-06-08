@@ -12,6 +12,7 @@ from src.handy import (
     validate_email,
     validate_float_number,
     validate_id_cn,
+    validate_ipv4,
     validate_license_plate,
     validate_password_strength,
     validate_phone_cn,
@@ -51,6 +52,27 @@ class TestHandy:
     )
     def test_validate_float_number(self, s: str, expected: bool):
         result = validate_float_number(s)
+        if expected:
+            assert result
+        else:
+            # not match
+            assert not result
+
+    @pytest.mark.parametrize(
+        ('s', 'expected'),
+        (
+            ('192.1.1.1', True),
+            ('192.', False),
+            ('192.1', False),
+            ('192.1.1', False),
+            ('192.1.1.1.1', False),
+            ('192..1.1.1', False),
+            ('192.1.1.1.', False),
+            ('.192.1.1.1', False),
+        ),
+    )
+    def test_validate_ipv4(self, s: str, expected: bool):
+        result = validate_ipv4(s)
         if expected:
             assert result
         else:

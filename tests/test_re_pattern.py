@@ -50,6 +50,31 @@ class TestRePattern:
     @pytest.mark.parametrize(
         ('s', 'expected'),
         (
+            ('192.1.1.1', True),
+            ('192.', False),
+            ('192.1', False),
+            ('192.1.1', False),
+            ('192.1.1.1.1', False),
+            ('192..1.1.1', False),
+            ('192.1.1.1.', False),
+            ('.192.1.1.1', False),
+        ),
+    )
+    def test_ipv4(
+        self,
+        s: str,
+        expected: list[str],
+    ):
+        m = re.match(r'(' + re_pattern.IPv4 + r')$', s)
+        if expected:
+            assert isinstance(m, re.Match)
+        else:
+            # not match
+            assert m is None
+
+    @pytest.mark.parametrize(
+        ('s', 'expected'),
+        (
             ('abc', False),
             ('ABC', False),
             ('aBc', False),
