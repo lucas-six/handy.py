@@ -10,6 +10,7 @@ from src.handy import (
     re_pattern,
     validate_domain_name,
     validate_license_plate,
+    validate_password_strength,
     validate_qq_id,
     validate_rgb_hex,
     validate_wx_id,
@@ -257,6 +258,35 @@ class TestHandy:
     )
     def test_validate_rgb_hex(self, s: str, expected: bool):
         result = validate_rgb_hex(s)
+        if expected:
+            assert result
+        else:
+            # not match
+            assert not result
+
+    @pytest.mark.parametrize(
+        ('s', 'min_len', 'expected'),
+        (
+            ('Aa1!56', 6, True),
+            ('Aa1!56', 1, False),  # minimal length not enough
+            ('Aa1!5', 6, False),  # length not enough
+            ('Aa1!567', 6, True),
+            ('Aa1456', 6, False),  # special characters required
+            ('123456', 6, False),  # pure digits
+            ('A12!45', 6, False),  # lowercase letter required
+            ('a12!45', 6, False),  # uppercase letter required
+            ('abcdef', 6, False),  # pure lowercase letters
+            ('ABCDEF', 6, False),  # pure uppercase letters
+            ('AbCdEf', 6, False),  # digits and special characters required
+        ),
+    )
+    def test_validate_password_strength(self, s: str, min_len: int, expected: bool):
+        if min_len < 2:
+            with pytest.raises(ValueError):
+                validate_password_strength(s, min_len)
+            return
+
+        result = validate_password_strength(s, min_len)
         if expected:
             assert result
         else:

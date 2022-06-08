@@ -24,6 +24,7 @@ from handy_utils import xxx
 - Domain name validation (English, Chinese)
 - RE pattern of color RGB hex
 - Color RGB hex validation
+- Password strength validation
 - RE pattern of license plate (Chinese mainland, Hongkong)
 - License plate validation (Chinese mainland, Hongkong)
 - RE pattern of WeChat (Wexin) ID

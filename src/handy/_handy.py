@@ -33,8 +33,24 @@ def validate_domain_name(s: str, language: LANGUAGE = LANGUAGE.EN) -> bool:
 
 
 def validate_rgb_hex(s: str) -> bool:
-    """RGB color hex validator."""
+    """Color RGB hex validator."""
     p = re.compile(r'(' + RGB_HEX + r')$')
+    m = p.match(s)
+    return m is not None
+
+
+def validate_password_strength(s: str, min_len: int) -> bool:
+    """Password strength validator.
+
+    包括至少1个大写字母，1个小写字母，1个数字，1个特殊字符
+    """
+    if min_len < 2:
+        raise ValueError('minimal length of password must greater than 1')
+    p = re.compile(
+        r'.*(?=.{'
+        + str(min_len)
+        + r',})(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*? ]).*$'
+    )
     m = p.match(s)
     return m is not None
 
