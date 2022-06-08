@@ -3,7 +3,7 @@ import string
 from collections.abc import Iterator
 from typing import Literal, Union
 
-from .re_pattern import CN_CHAR, DOMAIN_NAMES, LANGUAGE, LICENSE_PLATES
+from .re_pattern import CN_CHAR, DOMAIN_NAMES, LANGUAGE, LICENSE_PLATES, WX_ID
 
 
 def find_chinese_characters(
@@ -26,9 +26,14 @@ def validate_domain_name(s: str, language: LANGUAGE = LANGUAGE.EN) -> bool:
 
 def validate_license_plate(s: str, region: Literal['cn', 'hk']) -> bool:
     """License plate validator."""
-    p = re.compile(
-        r'(' + LICENSE_PLATES[region] + r')$',
-    )
+    p = re.compile(r'(' + LICENSE_PLATES[region] + r')$')
+    m = p.match(s)
+    return m is not None
+
+
+def validate_wx_id(s: str) -> bool:
+    """Wechat(Wexin) ID validator."""
+    p = re.compile(r'(' + WX_ID + r')$')
     m = p.match(s)
     return m is not None
 

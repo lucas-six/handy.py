@@ -10,6 +10,7 @@ from src.handy import (
     re_pattern,
     validate_domain_name,
     validate_license_plate,
+    validate_wx_id,
 )
 
 
@@ -250,6 +251,39 @@ class TestHandy:
     )
     def test_validate_license_plate_cn(self, s: str, expected: bool):
         result = validate_license_plate(s, 'cn')
+        if expected:
+            assert result
+        else:
+            # not match
+            assert not result
+
+    @pytest.mark.parametrize(
+        ('s', 'expected'),
+        (
+            ('a' * 6, True),
+            ('A' * 6, True),
+            ('Aa' * 3, True),
+            ('1' * 6, False),
+            ('a123' * 2, True),
+            ('1abcde', False),
+            ('a_123' * 2, True),
+            ('a-123' * 2, True),
+            ('a' * 20, True),
+            ('a' * 21, False),
+            (
+                random.choice(string.ascii_letters)
+                + ''.join(
+                    random.choices(
+                        string.ascii_letters + string.digits + '-_',
+                        k=random.randint(6 - 1, 20 + 1 - 1),
+                    )
+                ),
+                True,
+            ),
+        ),
+    )
+    def test_validate_wx_id(self, s: str, expected: bool):
+        result = validate_wx_id(s)
         if expected:
             assert result
         else:

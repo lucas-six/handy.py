@@ -338,3 +338,37 @@ class TestRePattern:
         else:
             # not match
             assert m is None
+
+    @pytest.mark.parametrize(
+        ('s', 'expected'),
+        (
+            ('a' * 6, True),
+            ('A' * 6, True),
+            ('Aa' * 3, True),
+            ('1' * 6, False),
+            ('a123' * 2, True),
+            ('1abcde', False),
+            ('a_123' * 2, True),
+            ('a-123' * 2, True),
+            ('a' * 20, True),
+            ('a' * 21, False),
+            (
+                random.choice(string.ascii_letters)
+                + ''.join(
+                    random.choices(
+                        string.ascii_letters + string.digits + '-_',
+                        k=random.randint(6 - 1, 20 + 1 - 1),
+                    )
+                ),
+                True,
+            ),
+        ),
+    )
+    def test_wx_id(self, s: str, expected: bool):
+        p = re.compile(r'(' + re_pattern.WX_ID + r')$')
+        m = p.match(s)
+        if expected:
+            assert isinstance(m, re.Match)
+        else:
+            # not match
+            assert m is None
