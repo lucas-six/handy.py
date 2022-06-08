@@ -4,6 +4,7 @@ from ._handy import (
     find_chinese_characters,
     ispunctuation,
     validate_domain_name,
+    validate_float_number,
     validate_license_plate,
     validate_password_strength,
     validate_qq_id,
@@ -15,6 +16,7 @@ __version__ = '0.0.1-alpha.6'
 
 __all__ = [
     'find_chinese_characters',
+    'validate_float_number',
     'validate_domain_name',
     'validate_rgb_hex',
     'validate_password_strength',
