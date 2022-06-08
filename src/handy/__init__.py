@@ -8,6 +8,7 @@ from ._handy import (
     validate_float_number,
     validate_license_plate,
     validate_password_strength,
+    validate_phone_cn,
     validate_qq_id,
     validate_rgb_hex,
     validate_wx_id,
@@ -25,5 +26,6 @@ __all__ = [
     'validate_license_plate',
     'validate_wx_id',
     'validate_qq_id',
+    'validate_phone_cn',
     'ispunctuation',
 ]

@@ -503,8 +503,32 @@ class TestRePattern:
         ),
     )
     def test_qq_id(self, s: str, expected: bool):
-        p = re.compile(r'(' + re_pattern.QQ_ID + r')$')
-        m = p.match(s)
+        m = re.match(r'(' + re_pattern.QQ_ID + r')$', s)
+        if expected:
+            assert isinstance(m, re.Match)
+        else:
+            # not match
+            assert m is None
+
+    @pytest.mark.parametrize(
+        ('s', 'expected'),
+        (
+            ('13800000000', True),
+            ('13900000000', True),
+            ('13600000000', True),
+            ('13500000000', True),
+            ('13400000000', True),
+            ('18600000000', True),
+            ('18500000000', True),
+            ('18900000000', True),
+            ('17500000000', True),
+            ('17700000000', True),
+            ('138000000000', False),
+            ('11100000000', False),
+        ),
+    )
+    def test_phone_cn(self, s: str, expected: bool):
+        m = re.match(r'(' + re_pattern.PHONE_CN + r')$', s)
         if expected:
             assert isinstance(m, re.Match)
         else:

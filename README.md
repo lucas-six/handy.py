@@ -35,6 +35,8 @@ from handy_utils import xxx
 - WeChat (Wexin) ID validation
 - RE pattern of QQ number (ID)
 - QQ number (ID) validation
+- RE pattern of Chinese telephone number
+- Chinese telephone number validation
 
 ## Scripts
 
