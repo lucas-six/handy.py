@@ -8,6 +8,7 @@ from .re_pattern import (
     DOMAIN_NAMES,
     EMAIL,
     FLOAT_NUMBER,
+    ID_CN,
     LANGUAGE,
     LICENSE_PLATES,
     PHONE_CN,
@@ -83,6 +84,11 @@ def validate_qq_id(s: str) -> bool:
 def validate_phone_cn(s: str) -> bool:
     """Chinese phone number validator."""
     return _validate_by_regex(s, PHONE_CN)
+
+
+def validate_id_cn(s: str) -> bool:
+    """Chinese ID validator."""
+    return _validate_by_regex(s, ID_CN)
 
 
 def ispunctuation(s: str) -> bool:

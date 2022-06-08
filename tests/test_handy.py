@@ -11,6 +11,7 @@ from src.handy import (
     validate_domain_name,
     validate_email,
     validate_float_number,
+    validate_id_cn,
     validate_license_plate,
     validate_password_strength,
     validate_phone_cn,
@@ -473,6 +474,25 @@ class TestHandy:
     )
     def test_validate_phone_cn(self, s: str, expected: bool):
         result = validate_phone_cn(s)
+        if expected:
+            assert result
+        else:
+            # not match
+            assert not result
+
+    @pytest.mark.parametrize(
+        ('s', 'expected'),
+        (
+            ('430000000000000000', True),
+            ('43000000000000000X', True),
+            ('4300000000000000000', False),
+            ('123456789011111', True),
+            ('12345678901111X', False),
+            ('43000000000000000', False),
+        ),
+    )
+    def test_validate_id_cn(self, s: str, expected: bool):
+        result = validate_id_cn(s)
         if expected:
             assert result
         else:

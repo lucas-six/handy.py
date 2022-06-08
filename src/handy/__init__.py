@@ -6,6 +6,7 @@ from ._handy import (
     validate_domain_name,
     validate_email,
     validate_float_number,
+    validate_id_cn,
     validate_license_plate,
     validate_password_strength,
     validate_phone_cn,
@@ -27,5 +28,6 @@ __all__ = [
     'validate_wx_id',
     'validate_qq_id',
     'validate_phone_cn',
+    'validate_id_cn',
     'ispunctuation',
 ]

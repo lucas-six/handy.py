@@ -534,3 +534,22 @@ class TestRePattern:
         else:
             # not match
             assert m is None
+
+    @pytest.mark.parametrize(
+        ('s', 'expected'),
+        (
+            ('430000000000000000', True),
+            ('43000000000000000X', True),
+            ('4300000000000000000', False),
+            ('123456789011111', True),
+            ('12345678901111X', False),
+            ('43000000000000000', False),
+        ),
+    )
+    def test_id_cn(self, s: str, expected: bool):
+        m = re.match(r'(' + re_pattern.ID_CN + r')$', s)
+        if expected:
+            assert isinstance(m, re.Match)
+        else:
+            # not match
+            assert m is None
