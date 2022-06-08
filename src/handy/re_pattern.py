@@ -9,6 +9,9 @@ FLOAT_NUMBER: Final[str] = r'-?\d+(\.\d+)?'
 # 中文字符
 CN_CHAR: Final[str] = r'[\u4E00-\u9FA5]'
 
+# Email address
+EMAIL: Final[str] = r'\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*'
+
 
 class LANGUAGE(Enum):
     EN = 'en'

@@ -9,6 +9,7 @@ from src.handy import (
     ispunctuation,
     re_pattern,
     validate_domain_name,
+    validate_email,
     validate_float_number,
     validate_license_plate,
     validate_password_strength,
@@ -48,6 +49,55 @@ class TestHandy:
     )
     def test_validate_float_number(self, s: str, expected: bool):
         result = validate_float_number(s)
+        if expected:
+            assert result
+        else:
+            # not match
+            assert not result
+
+    @pytest.mark.parametrize(
+        ('s', 'expected'),
+        (
+            ('abc', False),
+            ('ABC', False),
+            ('aBc', False),
+            ('123', False),
+            ('abc123', False),
+            ('ABC123', False),
+            ('aBc123', False),
+            ('123abc', False),
+            ('abc@', False),
+            ('ABC@', False),
+            ('aBc@', False),
+            ('123@', False),
+            ('abc123@', False),
+            ('aBc123@', False),
+            ('123abc@', False),
+            ('abc@a', False),
+            ('ABC@a', False),
+            ('aBc@a', False),
+            ('123@a', False),
+            ('abc123@a', False),
+            ('aBc123@a', False),
+            ('123abc@a', False),
+            ('abc@a.b', True),
+            ('ABC@a.b', True),
+            ('aBc@a.b', True),
+            ('123@a.b', True),
+            ('abc123@a.b', True),
+            ('aBc123@a.b', True),
+            ('123abc@a.b', True),
+            ('ab.@a.b', False),
+            ('ab-c@a.b', True),
+            ('ab_c@a.b', True),
+            ('ab.c@a.b', True),
+            ('ab+c@a.b', True),
+            ('abc@a-b.c', True),
+            ('abc@a.b.c', True),
+        ),
+    )
+    def test_validate_email(self, s: str, expected: bool):
+        result = validate_email(s)
         if expected:
             assert result
         else:

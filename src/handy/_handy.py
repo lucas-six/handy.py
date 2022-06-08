@@ -6,6 +6,7 @@ from typing import Literal, Union
 from .re_pattern import (
     CN_CHAR,
     DOMAIN_NAMES,
+    EMAIL,
     FLOAT_NUMBER,
     LANGUAGE,
     LICENSE_PLATES,
@@ -24,8 +25,13 @@ def find_chinese_characters(
 
 
 def validate_float_number(s: str) -> bool:
-    m = re.match(r'(' + FLOAT_NUMBER + r')$', s)
-    return m is not None
+    """Float number validator."""
+    return _validate_by_regex(s, FLOAT_NUMBER)
+
+
+def validate_email(s: str) -> bool:
+    """Email address validator."""
+    return _validate_by_regex(s, EMAIL, re.IGNORECASE)
 
 
 def validate_domain_name(s: str, language: LANGUAGE = LANGUAGE.EN) -> bool:
@@ -39,8 +45,7 @@ def validate_domain_name(s: str, language: LANGUAGE = LANGUAGE.EN) -> bool:
 
 def validate_rgb_hex(s: str) -> bool:
     """Color RGB hex validator."""
-    m = re.match(r'(' + RGB_HEX + r')$', s)
-    return m is not None
+    return _validate_by_regex(s, RGB_HEX, re.IGNORECASE)
 
 
 def validate_password_strength(s: str, min_len: int) -> bool:
@@ -61,20 +66,17 @@ def validate_password_strength(s: str, min_len: int) -> bool:
 
 def validate_license_plate(s: str, region: Literal['cn', 'hk']) -> bool:
     """License plate validator."""
-    m = re.match(r'(' + LICENSE_PLATES[region] + r')$', s)
-    return m is not None
+    return _validate_by_regex(s, LICENSE_PLATES[region])
 
 
 def validate_wx_id(s: str) -> bool:
     """Wechat(Wexin) ID validator."""
-    m = re.match(r'(' + WX_ID + r')$', s)
-    return m is not None
+    return _validate_by_regex(s, WX_ID)
 
 
 def validate_qq_id(s: str) -> bool:
     """QQ ID validator."""
-    m = re.match(r'(' + QQ_ID + r')$', s)
-    return m is not None
+    return _validate_by_regex(s, QQ_ID)
 
 
 def ispunctuation(s: str) -> bool:
@@ -86,3 +88,9 @@ def ispunctuation(s: str) -> bool:
         if c not in string.punctuation:
             return False
     return True
+
+
+def _validate_by_regex(s: str, pattern: str, flags: int = 0) -> bool:
+    """Validator by Regex."""
+    m = re.match(r'(' + pattern + r')$', s, flags=flags)
+    return m is not None

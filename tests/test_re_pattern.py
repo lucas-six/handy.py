@@ -51,6 +51,59 @@ class TestRePattern:
         ('s', 'expected'),
         (
             ('abc', False),
+            ('ABC', False),
+            ('aBc', False),
+            ('123', False),
+            ('abc123', False),
+            ('ABC123', False),
+            ('aBc123', False),
+            ('123abc', False),
+            ('abc@', False),
+            ('ABC@', False),
+            ('aBc@', False),
+            ('123@', False),
+            ('abc123@', False),
+            ('aBc123@', False),
+            ('123abc@', False),
+            ('abc@a', False),
+            ('ABC@a', False),
+            ('aBc@a', False),
+            ('123@a', False),
+            ('abc123@a', False),
+            ('aBc123@a', False),
+            ('123abc@a', False),
+            ('abc@a.b', True),
+            ('ABC@a.b', True),
+            ('aBc@a.b', True),
+            ('123@a.b', True),
+            ('abc123@a.b', True),
+            ('aBc123@a.b', True),
+            ('123abc@a.b', True),
+            ('ab.@a.b', False),
+            ('ab-c@a.b', True),
+            ('ab_c@a.b', True),
+            ('ab.c@a.b', True),
+            ('ab+c@a.b', True),
+            ('abc@a-b.c', True),
+            ('abc@a.b.c', True),
+        ),
+    )
+    def test_email(
+        self,
+        s: str,
+        expected: list[str],
+    ):
+        m = re.match(r'(' + re_pattern.EMAIL + r')$', s)
+        if expected:
+            assert isinstance(m, re.Match)
+        else:
+            # not match
+            assert m is None
+
+    @pytest.mark.parametrize(
+        ('s', 'expected'),
+        (
+            ('abc', False),
             ('123', False),
             ('!@#', False),
             ('abc123', False),
