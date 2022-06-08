@@ -7,6 +7,7 @@ from ._handy import (
     validate_email,
     validate_float_number,
     validate_id_cn,
+    validate_ipv4,
     validate_license_plate,
     validate_password_strength,
     validate_phone_cn,
@@ -20,6 +21,7 @@ __version__ = '0.0.1-alpha.7'
 __all__ = [
     'find_chinese_characters',
     'validate_float_number',
+    'validate_ipv4',
     'validate_email',
     'validate_domain_name',
     'validate_rgb_hex',

@@ -15,6 +15,7 @@ from .re_pattern import (
     QQ_ID,
     RGB_HEX,
     WX_ID,
+    IPv4,
 )
 
 
@@ -29,6 +30,11 @@ def find_chinese_characters(
 def validate_float_number(s: str) -> bool:
     """Float number validator."""
     return _validate_by_regex(s, FLOAT_NUMBER)
+
+
+def validate_ipv4(s: str) -> bool:
+    """IPv4 addresses validator."""
+    return _validate_by_regex(s, IPv4)
 
 
 def validate_email(s: str) -> bool:
