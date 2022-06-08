@@ -17,6 +17,9 @@ CN_CHAR: Final[str] = r'[\u4E00-\u9FA5]'
 # Email address
 EMAIL: Final[str] = r'\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*'
 
+# HTML标记的正则表达式
+HTML: Final[str] = r'<\S+[^>]*>.*?|<.*? />'
+
 
 class LANGUAGE(Enum):
     EN = 'en'

@@ -26,6 +26,8 @@ from handy_utils import xxx
 - IPv4 address validation
 - RE pattern of email addresses
 - Email address validation
+- RE pattern of HTML elements or tags
+- HTML element or tag validation
 - RE pattern of domain names (English, Chinese)
 - Domain name validation (English, Chinese)
 - RE pattern of color RGB hex
