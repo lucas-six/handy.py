@@ -57,3 +57,6 @@ LICENSE_PLATES: Final[dict[Literal['cn', 'hk'], str]] = {
     ),
     'hk': r'[A-Z]{2}[0-9]{3,4}',  # 香港
 }
+
+# 微信号正则表达式，6至20位，以字母开头，字母，数字，减号，下划线
+WX_ID: Final[str] = r'[a-zA-Z][a-zA-Z0-9_-]{5,19}'

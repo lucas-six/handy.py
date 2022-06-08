@@ -5,13 +5,15 @@ from ._handy import (
     ispunctuation,
     validate_domain_name,
     validate_license_plate,
+    validate_wx_id,
 )
 
-__version__ = '0.0.1-alpha.3'
+__version__ = '0.0.1-alpha.4'
 
 __all__ = [
     'find_chinese_characters',
     'validate_domain_name',
     'validate_license_plate',
+    'validate_wx_id',
     'ispunctuation',
 ]

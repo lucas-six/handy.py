@@ -18,9 +18,14 @@ from handy_utils import xxx
 
 ## Features
 
-- Find Chinese characters in a string.
-- Domain name validation (English, Chinese).
-- License plate validation (Chinese mainland, Hongkong).
+- RE pattern of Chinese characters
+- Find Chinese characters in a string
+- RE pattern of domain name (English, Chinese)
+- Domain name validation (English, Chinese)
+- RE pattern of license plate (Chinese mainland, Hongkong)
+- License plate validation (Chinese mainland, Hongkong)
+- RE pattern of WeChat (Wexin) ID
+- WeChat (Wexin) ID validation
 
 ## Scripts
 
