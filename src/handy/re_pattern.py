@@ -47,7 +47,7 @@ DOMAIN_NAMES: Final[dict[LANGUAGE, tuple[str, int]]] = {
 }
 
 # 车牌号
-LICENSE_PLATES: Final[dict[Literal["cn", "hk"], str]] = {
+LICENSE_PLATES: Final[dict[Literal['cn', 'hk'], str]] = {
     'cn': (
         r'[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z]'
         r'[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}'
