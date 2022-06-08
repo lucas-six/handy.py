@@ -3,7 +3,15 @@ import string
 from collections.abc import Iterator
 from typing import Literal, Union
 
-from .re_pattern import CN_CHAR, DOMAIN_NAMES, LANGUAGE, LICENSE_PLATES, QQ_ID, WX_ID
+from .re_pattern import (
+    CN_CHAR,
+    DOMAIN_NAMES,
+    LANGUAGE,
+    LICENSE_PLATES,
+    QQ_ID,
+    RGB_HEX,
+    WX_ID,
+)
 
 
 def find_chinese_characters(
@@ -22,6 +30,13 @@ def validate_domain_name(s: str, language: LANGUAGE = LANGUAGE.EN) -> bool:
     if m:
         return len(s) <= dn[1]
     return False
+
+
+def validate_rgb_hex(s: str) -> bool:
+    """RGB color hex validator."""
+    p = re.compile(r'(' + RGB_HEX + r')$')
+    m = p.match(s)
+    return m is not None
 
 
 def validate_license_plate(s: str, region: Literal['cn', 'hk']) -> bool:

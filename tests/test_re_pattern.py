@@ -318,6 +318,34 @@ class TestRePattern:
     @pytest.mark.parametrize(
         ('s', 'expected'),
         (
+            ('#123', True),
+            ('#123456', True),
+            ('#1234567', False),
+            ('123', False),
+            ('123456', False),
+            ('#abc', True),
+            ('#abcdef', True),
+            ('#12345', False),
+            ('#fffff', False),
+            ('#FFFFF', False),
+            ('#ABC', True),
+            ('#FFFFFF', True),
+            ('#GGG', False),
+            ('#GGGGGG', False),
+        ),
+    )
+    def test_rgb_hex(self, s: str, expected: bool):
+        p = re.compile(r'(' + re_pattern.RGB_HEX + r')$')
+        m = p.match(s)
+        if expected:
+            assert isinstance(m, re.Match)
+        else:
+            # not match
+            assert m is None
+
+    @pytest.mark.parametrize(
+        ('s', 'expected'),
+        (
             ('湘A12345', True),
             ('AA12345', False),
             ('中A12345', False),
