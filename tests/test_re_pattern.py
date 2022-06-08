@@ -357,7 +357,7 @@ class TestRePattern:
                 + ''.join(
                     random.choices(
                         string.ascii_letters + string.digits + '-_',
-                        k=random.randint(6 - 1, 20 + 1 - 1),
+                        k=random.randint(6 - 1, 20 - 1),
                     )
                 ),
                 True,
@@ -366,6 +366,40 @@ class TestRePattern:
     )
     def test_wx_id(self, s: str, expected: bool):
         p = re.compile(r'(' + re_pattern.WX_ID + r')$')
+        m = p.match(s)
+        if expected:
+            assert isinstance(m, re.Match)
+        else:
+            # not match
+            assert m is None
+
+    @pytest.mark.parametrize(
+        ('s', 'expected'),
+        (
+            ('a' * 5, False),
+            ('A' * 5, False),
+            ('Aa' * 3, False),
+            ('1' * 5, True),
+            ('a1234', False),
+            ('1abcd', False),
+            ('a_1234', False),
+            ('a-1234', False),
+            ('1' * 5, True),
+            ('1' * 12, False),
+            (
+                str(random.randint(1, 9))
+                + ''.join(
+                    random.choices(
+                        string.digits,
+                        k=random.randint(5 - 1, 11 - 1),
+                    )
+                ),
+                True,
+            ),
+        ),
+    )
+    def test_qq_id(self, s: str, expected: bool):
+        p = re.compile(r'(' + re_pattern.QQ_ID + r')$')
         m = p.match(s)
         if expected:
             assert isinstance(m, re.Match)
