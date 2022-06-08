@@ -8,6 +8,7 @@ from .re_pattern import (
     DOMAIN_NAMES,
     EMAIL,
     FLOAT_NUMBER,
+    HTML,
     ID_CN,
     LANGUAGE,
     LICENSE_PLATES,
@@ -40,6 +41,11 @@ def validate_ipv4(s: str) -> bool:
 def validate_email(s: str) -> bool:
     """Email address validator."""
     return _validate_by_regex(s, EMAIL, re.IGNORECASE)
+
+
+def validate_html(s: str) -> bool:
+    """HTML elements or tags validator."""
+    return _validate_by_regex(s, HTML, re.IGNORECASE | re.DOTALL)
 
 
 def validate_domain_name(s: str, language: LANGUAGE = LANGUAGE.EN) -> bool:

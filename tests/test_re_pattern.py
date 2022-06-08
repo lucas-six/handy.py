@@ -129,6 +129,41 @@ class TestRePattern:
         ('s', 'expected'),
         (
             ('abc', False),
+            ('ABC', False),
+            ('aBc', False),
+            ('<br>', True),
+            ('<a>a</a>', True),
+            ('<A>a</A>', True),
+            ('<img/>', True),
+            ('<img />', True),
+            ('<a href="xxx">aaa</a>', True),
+            ('<a \teditable>aaa</a>', True),
+            ('<section>aaa</section>', True),
+            ('<sEction>aaa</section>', True),
+            ('< section>aaa</section>', False),
+            ('<section><section>aaa</section></section>', True),
+            ('<section> <section>a a a</section> </section>', True),
+            ('<section> \t<section>a a \ta\t</section> \t</section>', True),
+            ('<section>\n<section>aaa </section>\n\n</section>', True),
+            ('<section>\n<section>aa\ta </section>\n\n</section>', True),
+        ),
+    )
+    def test_html(
+        self,
+        s: str,
+        expected: list[str],
+    ):
+        m = re.match(r'(' + re_pattern.HTML + r')$', s, re.IGNORECASE | re.DOTALL)
+        if expected:
+            assert isinstance(m, re.Match)
+        else:
+            # not match
+            assert m is None
+
+    @pytest.mark.parametrize(
+        ('s', 'expected'),
+        (
+            ('abc', False),
             ('123', False),
             ('!@#', False),
             ('abc123', False),

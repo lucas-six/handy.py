@@ -11,6 +11,7 @@ from src.handy import (
     validate_domain_name,
     validate_email,
     validate_float_number,
+    validate_html,
     validate_id_cn,
     validate_ipv4,
     validate_license_plate,
@@ -73,6 +74,37 @@ class TestHandy:
     )
     def test_validate_ipv4(self, s: str, expected: bool):
         result = validate_ipv4(s)
+        if expected:
+            assert result
+        else:
+            # not match
+            assert not result
+
+    @pytest.mark.parametrize(
+        ('s', 'expected'),
+        (
+            ('abc', False),
+            ('ABC', False),
+            ('aBc', False),
+            ('<br>', True),
+            ('<a>a</a>', True),
+            ('<A>a</A>', True),
+            ('<img/>', True),
+            ('<img />', True),
+            ('<a href="xxx">aaa</a>', True),
+            ('<a \teditable>aaa</a>', True),
+            ('<section>aaa</section>', True),
+            ('<sEction>aaa</sectIon>', True),
+            ('< section>aaa</section>', False),
+            ('<section><section>aaa</section></section>', True),
+            ('<section> <section>a a a</section> </section>', True),
+            ('<section> \t<section>a a \ta\t</section> \t</section>', True),
+            ('<section>\n<section>aaa </section>\n\n</section>', True),
+            ('<section>\n<section>aa\ta </section>\n\n</section>', True),
+        ),
+    )
+    def test_validate_html(self, s: str, expected: bool):
+        result = validate_html(s)
         if expected:
             assert result
         else:
