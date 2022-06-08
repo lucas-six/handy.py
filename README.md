@@ -22,6 +22,8 @@ from handy_utils import xxx
 - Find Chinese characters in a string
 - RE pattern of float numbers
 - Float number validation
+- RE pattern of email addresses
+- Email address validation
 - RE pattern of domain names (English, Chinese)
 - Domain name validation (English, Chinese)
 - RE pattern of color RGB hex
