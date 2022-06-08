@@ -114,7 +114,8 @@ class TestRePattern:
     )
     def test_domain_name_en(self, s: str, expected: bool):
         p = re.compile(
-            re_pattern.DOMAIN_NAMES[re_pattern.LANGUAGE.EN][0] + r'$', re.IGNORECASE
+            r'(' + re_pattern.DOMAIN_NAMES[re_pattern.LANGUAGE.EN][0] + r')$',
+            re.IGNORECASE,
         )
         m = p.match(s)
         if expected:
@@ -304,8 +305,33 @@ class TestRePattern:
     )
     def test_domain_name_cn(self, s: str, expected: bool):
         p = re.compile(
-            re_pattern.DOMAIN_NAMES[re_pattern.LANGUAGE.CN][0] + r'$', re.IGNORECASE
+            r'(' + re_pattern.DOMAIN_NAMES[re_pattern.LANGUAGE.CN][0] + r')$',
+            re.IGNORECASE,
         )
+        m = p.match(s)
+        if expected:
+            assert isinstance(m, re.Match)
+        else:
+            # not match
+            assert m is None
+
+    @pytest.mark.parametrize(
+        ('s', 'expected'),
+        (
+            ('湘A12345', True),
+            ('AA12345', False),
+            ('中A12345', False),
+            ('湘A1234D', True),
+            ('湘A1234DF', True),
+            ('湘A1234', False),
+            ('湘a12345', False),
+            ('湘A1234d', False),
+            ('湘A12345678', False),
+            ('湘A123.5', False),
+        ),
+    )
+    def test_license_plate(self, s: str, expected: bool):
+        p = re.compile(r'(' + re_pattern.LICENSE_PLATES['cn'] + r')$')
         m = p.match(s)
         if expected:
             assert isinstance(m, re.Match)

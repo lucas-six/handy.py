@@ -20,6 +20,7 @@ from handy_utils import xxx
 
 - Find Chinese characters in a string.
 - Domain name validation (English, Chinese).
+- License plate validation (Chinese mainland, Hongkong).
 
 ## Scripts
 

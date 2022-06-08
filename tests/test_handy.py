@@ -9,6 +9,7 @@ from src.handy import (
     ispunctuation,
     re_pattern,
     validate_domain_name,
+    validate_license_plate,
 )
 
 
@@ -231,6 +232,29 @@ class TestHandy:
     )
     def test_validate_domain_cn(self, s: str, expected: bool):
         self._validate_domain_name(s, expected, re_pattern.LANGUAGE.CN)
+
+    @pytest.mark.parametrize(
+        ('s', 'expected'),
+        (
+            ('湘A12345', True),
+            ('AA12345', False),
+            ('中A12345', False),
+            ('湘A1234D', True),
+            ('湘A1234DF', True),
+            ('湘A1234', False),
+            ('湘a12345', False),
+            ('湘A1234d', False),
+            ('湘A12345678', False),
+            ('湘A123.5', False),
+        ),
+    )
+    def test_validate_license_plate_cn(self, s: str, expected: bool):
+        result = validate_license_plate(s, 'cn')
+        if expected:
+            assert result
+        else:
+            # not match
+            assert not result
 
     def test_ispunctuation(self):
         assert not ispunctuation('')
