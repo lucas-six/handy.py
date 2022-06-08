@@ -60,3 +60,6 @@ LICENSE_PLATES: Final[dict[Literal['cn', 'hk'], str]] = {
 
 # 微信号正则表达式，6至20位，以字母开头，字母，数字，减号，下划线
 WX_ID: Final[str] = r'[a-zA-Z][a-zA-Z0-9_-]{5,19}'
+
+# QQ号正则表达式，5至11位数字
+QQ_ID: Final[str] = r'[1-9][0-9]{4,10}'

@@ -26,6 +26,8 @@ from handy_utils import xxx
 - License plate validation (Chinese mainland, Hongkong)
 - RE pattern of WeChat (Wexin) ID
 - WeChat (Wexin) ID validation
+- RE pattern of QQ number (ID)
+- QQ number (ID) validation
 
 ## Scripts
 
