@@ -37,6 +37,8 @@ from handy_utils import xxx
 - QQ number (ID) validation
 - RE pattern of Chinese telephone number
 - Chinese telephone number validation
+- RE pattern of Chinese ID number
+- Chinese ID number validation
 
 ## Scripts
 
