@@ -1,3 +1,4 @@
+import operator
 import random
 import re
 import string
@@ -5,6 +6,7 @@ import string
 import pytest
 
 from src.handy import (
+    LocalMapReduce,
     find_chinese_characters,
     ispunctuation,
     re_pattern,
@@ -38,6 +40,25 @@ class TestHandy:
         for m, e in zip(find_chinese_characters(s), expected):
             assert isinstance(m, re.Match)
             assert m.group() == e
+
+    def test_LocalMapReduce(self):
+
+        inputs = iter(['a', 'b', 'c', 'a'])
+        mapper = LocalMapReduce(
+            self._LocalMapReduce_map_func, self._LocalMapReduce_reduce_func, workers=1
+        )
+        outputs = mapper(inputs)
+        outputs.sort(key=operator.itemgetter(1), reverse=True)
+        assert outputs == [('a', 2), ('b', 1), ('c', 1)]
+
+    def _LocalMapReduce_map_func(self, word: str) -> tuple[str, int]:
+        return (word, 1)
+
+    def _LocalMapReduce_reduce_func(
+        self, item: tuple[str, list[int]]
+    ) -> tuple[str, int]:
+        word, occurences = item
+        return (word, sum(occurences))
 
     @pytest.mark.parametrize(
         ('s', 'expected'),

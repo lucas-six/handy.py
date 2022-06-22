@@ -1,6 +1,7 @@
 """Collection of handy utils for Python."""
 
 from ._handy import (
+    LocalMapReduce,
     find_chinese_characters,
     ispunctuation,
     validate_domain_name,
@@ -21,6 +22,7 @@ __version__ = '0.0.1-alpha.7'
 
 __all__ = [
     'find_chinese_characters',
+    'LocalMapReduce',
     'validate_float_number',
     'validate_ipv4',
     'validate_email',
