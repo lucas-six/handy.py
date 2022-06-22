@@ -18,31 +18,33 @@ from handy_utils import xxx
 
 ## Features
 
-- RE pattern of Chinese characters
-- Find Chinese characters in a string
-- RE pattern of float numbers
-- Float number validation
-- RE pattern of IPv4 addresses
-- IPv4 address validation
-- RE pattern of email addresses
-- Email address validation
-- RE pattern of HTML elements or tags
-- HTML element or tag validation
-- RE pattern of domain names (English, Chinese)
-- Domain name validation (English, Chinese)
-- RE pattern of color RGB hex
-- Color RGB hex validation
-- Password strength validation
-- RE pattern of license plate (Chinese mainland, Hongkong)
-- License plate validation (Chinese mainland, Hongkong)
-- RE pattern of WeChat (Wexin) ID
-- WeChat (Wexin) ID validation
-- RE pattern of QQ number (ID)
-- QQ number (ID) validation
-- RE pattern of Chinese telephone number
-- Chinese telephone number validation
-- RE pattern of Chinese ID number
-- Chinese ID number validation
+- MapReduce on local host
+- Regex patterns
+  - Regex pattern of Chinese characters
+  - Find Chinese characters in a string
+  - Regex pattern of float numbers
+  - Float number validation
+  - Regex pattern of IPv4 addresses
+  - IPv4 address validation
+  - Regex pattern of email addresses
+  - Email address validation
+  - Regex pattern of HTML elements or tags
+  - HTML element or tag validation
+  - Regex pattern of domain names (English, Chinese)
+  - Domain name validation (English, Chinese)
+  - Regex pattern of color RGB hex
+  - Color RGB hex validation
+  - Password strength validation
+  - Regex pattern of license plate (Chinese mainland, Hongkong)
+  - License plate validation (Chinese mainland, Hongkong)
+  - Regex pattern of WeChat (Wexin) ID
+  - WeChat (Wexin) ID validation
+  - Regex pattern of QQ number (ID)
+  - QQ number (ID) validation
+  - Regex pattern of Chinese telephone number
+  - Chinese telephone number validation
+  - Regex pattern of Chinese ID number
+  - Chinese ID number validation
 
 ## Scripts
 

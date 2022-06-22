@@ -1,7 +1,9 @@
+import multiprocessing
 import re
 import string
-from collections.abc import Iterator
-from typing import Literal, Union
+from collections import defaultdict
+from collections.abc import ItemsView, Iterator
+from typing import Any, Callable, Literal, Union
 
 from .re_pattern import (
     CN_CHAR,
@@ -112,6 +114,68 @@ def ispunctuation(s: str) -> bool:
         if c not in string.punctuation:
             return False
     return True
+
+
+class LocalMapReduce:
+    """A lcoal (not distributed) version of MapReduce.
+
+    Usage:
+
+        mapper = LocalMapReduce(map_func, reduce_func)
+        outputs: list[tuple[str, Any]] = mapper(inputs)
+    """
+
+    def __init__(
+        self,
+        map_func: Callable[
+            [Any],
+            tuple[Any, Any],
+        ],
+        reduce_func: Callable[
+            [Any],
+            tuple[Any, Any],
+        ],
+        workers: int = multiprocessing.cpu_count(),
+    ) -> None:
+        """
+        @param map_func: Function to map inputs to intermediate data. Takes as argument
+                         one input value and returns a tuple with the key and a value
+                         to be reduced.
+        @param reduce_func: Function to reduce partitioned version of intermediate data
+                            to final output. Takes as argument a key as produced by
+                            `map_func` and a sequence of the values associated with that
+                            key.
+        @param workers: The number of workers to create in the pool. Defaults to the
+                        number of CPUs available on the current host.
+        """
+        self._map_func = map_func
+        self._reduce_func = reduce_func
+        self._pool = multiprocessing.Pool(workers)
+
+    def __call__(
+        self, inputs: Iterator[Any], chunksize: int = 1
+    ) -> list[tuple[Any, Any]]:
+        """Process the inputs through the map and reduce functions given.
+
+        @param inputs: An iterable containing the input data to be processed.
+        @param chunksize: The portion of the input data to hand to each worker.
+                          This can be used to tune performance during the mapping
+                          phase.
+        """
+        map_responses = self._pool.map(self._map_func, inputs, chunksize=chunksize)
+        partition_data = self.partition(iter(map_responses))
+        return self._pool.map(self._reduce_func, partition_data)
+
+    def partition(
+        self, mapped_values: Iterator[tuple[Any, Any]]
+    ) -> ItemsView[Any, list[Any]]:
+        """Organize the mapped values by their key.
+        Returns an unsorted sequence of tuples with a key and a sequence of values.
+        """
+        partition_data: defaultdict[Any, list[Any]] = defaultdict(list)
+        for key, value in mapped_values:
+            partition_data[key].append(value)
+        return partition_data.items()
 
 
 def _validate_by_regex(s: str, pattern: str, flags: int = 0) -> bool:
