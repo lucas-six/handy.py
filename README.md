@@ -19,6 +19,8 @@ from handy_utils import xxx
 ## Features
 
 - MapReduce on local host
+- Decorators
+  - Add attributes to a function/method.
 - Regex patterns
   - Regex pattern of Chinese characters
   - Find Chinese characters in a string
