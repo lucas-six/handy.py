@@ -1,4 +1,4 @@
-from typing import Any, Callable
+from typing import Any
 
 import pytest
 
@@ -26,8 +26,8 @@ class TestDecorators:
 
     def test_attrs(
         self,
-        attrs_func_no_argument: Callable[[], None],
-        attrs_func_with_arguments: Callable[[Any], None],
+        attrs_func_no_argument: Any,
+        attrs_func_with_arguments: Any,
     ):
         assert attrs_func_no_argument.__name__ == 'func'
         assert attrs_func_no_argument.__doc__ == 'attrs_func for testing.'
