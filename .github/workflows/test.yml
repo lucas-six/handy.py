@@ -2,12 +2,11 @@ name: test
 
 on:
   pull_request:
-  push:
-    branches: [develop]
+    branches: [main]
 
 jobs:
   pytest:
-    name: pytest(coverage)
+    name: PyTest
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
