@@ -26,6 +26,7 @@ from handy_utils import xxx
   - **`@logging_wall_time`**: Logging the run time (wall time) of the decorated function in seconds.
   - **`@logging_wall_time_ns`**: Logging the run time (wall time) of the decorated function in nanoseconds.
   - **`@logging_cpu_time`**: Logging the process time (CPU time) of the decorated function in seconds.
+  - **`@logging_cpu_time_ns`**: Logging the process time (CPU time) of the decorated function in nanoseconds.
 - Regex patterns
   - Regex pattern of Chinese characters
   - Find Chinese characters in a string
