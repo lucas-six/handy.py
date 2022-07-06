@@ -115,6 +115,21 @@ def logging_wall_time(_func: Callable[..., Any]):
     return wrapper
 
 
+def logging_wall_time_ns(_func: Callable[..., Any]):
+    """Logging the run time (wall time) of the decorated function in nanoseconds."""
+    logger = logging.getLogger(LOGGER_NAME)
+
+    @wraps(_func)
+    def wrapper(*args: Any, **kwargs: Any):
+        start_time = time.perf_counter_ns()
+        result = _func(*args, **kwargs)
+        run_time = time.perf_counter_ns() - start_time
+        logger.debug(f'Finished {_func.__name__}() in {run_time} nanoseconds')
+        return result
+
+    return wrapper
+
+
 def logging_cpu_time(_func: Callable[..., Any]):
     """Logging the process time (CPU time) of the decorated function in seconds."""
     logger = logging.getLogger(LOGGER_NAME)

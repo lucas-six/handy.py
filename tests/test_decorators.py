@@ -9,6 +9,7 @@ from src.handy.decorators import (
     attrs,
     logging_cpu_time,
     logging_wall_time,
+    logging_wall_time_ns,
     returns,
     singleton,
 )
@@ -173,6 +174,16 @@ class TestDecorators:
         return waste_time
 
     @pytest.fixture
+    def waste_wall_time_ns_func(self):
+        @logging_wall_time_ns
+        def waste_time(num_times: int):
+            for _ in range(num_times):
+                sum([i**2 for i in range(1000)])
+            return True
+
+        return waste_time
+
+    @pytest.fixture
     def waste_cpu_time_func(self):
         @logging_cpu_time
         def waste_time(num_times: int):
@@ -191,6 +202,17 @@ class TestDecorators:
         assert len(caplog.records) == 1
         assert caplog.records[0].message.startswith('Finished waste_time() in')
         assert caplog.records[0].message.endswith('seconds')
+        assert caplog.records[0].levelno == logging.DEBUG
+
+    def test_logging_wall_time_ns(
+        self, caplog: Any, waste_wall_time_ns_func: Callable[[int], Literal[True]]
+    ):
+        with caplog.at_level(logging.DEBUG, logger=LOGGER_NAME):
+            assert waste_wall_time_ns_func(99)
+
+        assert len(caplog.records) == 1
+        assert caplog.records[0].message.startswith('Finished waste_time() in')
+        assert caplog.records[0].message.endswith('nanoseconds')
         assert caplog.records[0].levelno == logging.DEBUG
 
     def test_logging_cpu_time(
