@@ -169,7 +169,7 @@ class TestDecorators:
         @logging_wall_time
         def waste_time(num_times: int):
             for _ in range(num_times):
-                sum([i**2 for i in range(1000)])
+                sum(i**2 for i in range(1000))
             return True
 
         return waste_time
@@ -179,7 +179,7 @@ class TestDecorators:
         @logging_wall_time_ns
         def waste_time(num_times: int):
             for _ in range(num_times):
-                sum([i**2 for i in range(1000)])
+                sum(i**2 for i in range(1000))
             return True
 
         return waste_time
@@ -189,7 +189,7 @@ class TestDecorators:
         @logging_cpu_time
         def waste_time(num_times: int):
             for _ in range(num_times):
-                sum([i**2 for i in range(1000)])
+                sum(i**2 for i in range(1000))
             return True
 
         return waste_time
@@ -199,7 +199,7 @@ class TestDecorators:
         @logging_cpu_time_ns
         def waste_time(num_times: int):
             for _ in range(num_times):
-                sum([i**2 for i in range(1000)])
+                sum(i**2 for i in range(1000))
             return True
 
         return waste_time
