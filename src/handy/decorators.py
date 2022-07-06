@@ -113,3 +113,18 @@ def logging_wall_time(_func: Callable[..., Any]):
         return result
 
     return wrapper
+
+
+def logging_cpu_time(_func: Callable[..., Any]):
+    """Logging the process time (CPU time) of the decorated function in seconds."""
+    logger = logging.getLogger(LOGGER_NAME)
+
+    @wraps(_func)
+    def wrapper(*args: Any, **kwargs: Any):
+        start_time = time.process_time()
+        result = _func(*args, **kwargs)
+        run_time = time.process_time() - start_time
+        logger.debug(f'Finished {_func.__name__}() in {run_time:.4f} seconds')
+        return result
+
+    return wrapper
