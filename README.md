@@ -21,7 +21,7 @@ from handy_utils import xxx
 - MapReduce on local host
 - Decorators
   - Add attributes to a function/method.
-  - Enforce function argument.
+  - Enforce function argument and return type.
 - Regex patterns
   - Regex pattern of Chinese characters
   - Find Chinese characters in a string

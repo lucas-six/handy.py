@@ -2,7 +2,7 @@ from typing import Any, Callable, Union
 
 import pytest
 
-from src.handy.decorators import accepts, attrs
+from src.handy.decorators import accepts, attrs, returns
 
 
 class TestDecorators:
@@ -109,3 +109,36 @@ class TestDecorators:
                 return arg1 * arg2
 
             assert func3(1, 2) == 2
+
+    @pytest.fixture
+    def returns_func(self):
+        @returns(int, float)
+        def func(arg1: int, arg2: float) -> float:
+            '''returns_func for testing.'''
+            return arg1 * arg2
+
+        return func
+
+    def test_returns_attributes(self, returns_func: Callable[[int, float], float]):
+        assert returns_func.__name__ == 'func'
+        assert (
+            returns_func.__qualname__
+            == f'{self.__class__.__name__}.returns_func.<locals>.func'
+        )
+        assert returns_func.__doc__ == 'returns_func for testing.'
+
+        assert returns_func(1, 2) == 2
+        assert returns_func(1, 2.2) == 2.2
+
+    @pytest.mark.parametrize(
+        ('arg1', 'arg2'),
+        (('1', 2), ('1', 2.2), (1, '2'), ('1', '2')),
+    )
+    def test_returns_invalid_return_type(
+        self,
+        returns_func: Callable[[int, float], float],
+        arg1: Union[str, float],
+        arg2: Union[str, float],
+    ):
+        with pytest.raises(TypeError):
+            returns_func(arg1, arg2)  # type: ignore

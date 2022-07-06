@@ -26,7 +26,7 @@ def attrs(**_kwargs: Any) -> Any:
 def accepts(
     *types: Union[Any, tuple[Any, ...]],
 ) -> Any:
-    """Enforce function argument.
+    """Enforce function argument type.
 
     Usage:
 
@@ -47,6 +47,30 @@ def accepts(
                 if not isinstance(a, t):
                     raise TypeError(f'arg {a} ({type(a)}) does not match {t}')
             return _func(*args, **kwargs)
+
+        return wrapper
+
+    return _decorator
+
+
+def returns(*rtype: Any) -> Any:
+    """Enforce function return types.
+
+    Usage:
+
+        @returns(int)
+        def func(arg1: int, arg2: int) -> int:
+            return arg1 + arg2
+    """
+
+    def _decorator(_func: Callable[..., Any]):
+        @wraps(_func)
+        def wrapper(*args: Any, **kwargs: Any):
+            """wrapper function."""
+            result = _func(*args, **kwargs)
+            if not isinstance(result, rtype):
+                raise TypeError(f'return value {result} does not match {rtype}')
+            return result
 
         return wrapper
 
