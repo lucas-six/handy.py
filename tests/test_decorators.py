@@ -2,7 +2,7 @@ from typing import Any, Callable, Union
 
 import pytest
 
-from src.handy.decorators import accepts, attrs, returns
+from src.handy.decorators import accepts, attrs, returns, singleton
 
 
 class TestDecorators:
@@ -142,3 +142,13 @@ class TestDecorators:
     ):
         with pytest.raises(TypeError):
             returns_func(arg1, arg2)  # type: ignore
+
+    def test_singleton(self):
+        @singleton
+        class MyClass:
+            pass
+
+        c1 = MyClass()
+        c2 = MyClass()
+        assert c1 == c2
+        assert c1 is c2

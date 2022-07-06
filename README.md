@@ -20,8 +20,9 @@ from handy_utils import xxx
 
 - MapReduce on local host
 - Decorators
-  - Add attributes to a function/method.
-  - Enforce function argument and return type.
+  - **`@attrs`**: Add attributes to a function/method.
+  - **`@accepts`** and **`@returns`**: Enforce function argument and return types.
+  - **`@singleton`**: Define a class with a singleton instance.
 - Regex patterns
   - Regex pattern of Chinese characters
   - Find Chinese characters in a string
