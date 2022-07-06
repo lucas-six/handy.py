@@ -75,3 +75,22 @@ def returns(*rtype: Any) -> Any:
         return wrapper
 
     return _decorator
+
+
+def singleton(cls: Any):
+    """Define a class with a singleton instance.
+
+    Usage:
+
+        @singleton
+        class MyClass:
+            pass
+    """
+    instances: dict[Any, object] = {}
+
+    def getinstance() -> object:
+        if cls not in instances:
+            instances[cls] = cls()
+        return instances[cls]
+
+    return getinstance
