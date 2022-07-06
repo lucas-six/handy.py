@@ -1,7 +1,11 @@
 """Decorators."""
 
+import logging
+import time
 from functools import wraps
 from typing import Any, Callable, Union
+
+from . import LOGGER_NAME
 
 
 def attrs(**_kwargs: Any) -> Any:
@@ -94,3 +98,18 @@ def singleton(cls: Any):
         return instances[cls]
 
     return getinstance
+
+
+def logging_wall_time(_func: Callable[..., Any]):
+    """Logging the run time (wall time) of the decorated function in seconds."""
+    logger = logging.getLogger(LOGGER_NAME)
+
+    @wraps(_func)
+    def wrapper(*args: Any, **kwargs: Any):
+        start_time = time.perf_counter()
+        result = _func(*args, **kwargs)
+        run_time = time.perf_counter() - start_time
+        logger.debug(f'Finished {_func.__name__}() in {run_time:.4f} seconds')
+        return result
+
+    return wrapper

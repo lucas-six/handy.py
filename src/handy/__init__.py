@@ -37,3 +37,5 @@ __all__ = [
     'validate_id_cn',
     'ispunctuation',
 ]
+
+LOGGER_NAME = 'handy'

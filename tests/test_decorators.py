@@ -1,8 +1,10 @@
+import logging
 from typing import Any, Callable, Union
 
 import pytest
 
-from src.handy.decorators import accepts, attrs, returns, singleton
+from src.handy import LOGGER_NAME
+from src.handy.decorators import accepts, attrs, logging_wall_time, returns, singleton
 
 
 class TestDecorators:
@@ -152,3 +154,24 @@ class TestDecorators:
         c2 = MyClass()
         assert c1 == c2
         assert c1 is c2
+
+    @pytest.fixture
+    def waste_time_func(self):
+        @logging_wall_time
+        def waste_time(num_times: int):
+            for _ in range(num_times):
+                sum([i**2 for i in range(1000)])
+
+        return waste_time
+
+    def test_logging_wall_time(
+        self, caplog: Any, waste_time_func: Callable[[int], None]
+    ):
+
+        with caplog.at_level(logging.DEBUG, logger=LOGGER_NAME):
+            waste_time_func(99)
+
+        assert len(caplog.records) == 1
+        assert caplog.records[0].message.startswith('Finished waste_time() in')
+        assert caplog.records[0].message.endswith('seconds')
+        assert caplog.records[0].levelno == logging.DEBUG
