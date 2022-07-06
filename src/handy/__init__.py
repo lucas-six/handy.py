@@ -18,7 +18,7 @@ from ._handy import (
     validate_wx_id,
 )
 
-__version__ = '0.0.1-alpha.7'
+__version__ = '0.0.1-alpha.8'
 
 __all__ = [
     'find_chinese_characters',
