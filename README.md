@@ -24,6 +24,7 @@ from handy_utils import xxx
   - **`@accepts`** and **`@returns`**: Enforce function argument and return types.
   - **`@singleton`**: Define a class with a singleton instance.
   - **`@logging_wall_time`**: Logging the run time (wall time) of the decorated function in seconds.
+  - **`@logging_cpu_time`**: Logging the process time (CPU time) of the decorated function in seconds.
 - Regex patterns
   - Regex pattern of Chinese characters
   - Find Chinese characters in a string
