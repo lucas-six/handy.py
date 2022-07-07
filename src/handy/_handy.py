@@ -2,8 +2,8 @@ import multiprocessing
 import re
 import string
 from collections import defaultdict
-from collections.abc import ItemsView, Iterator
-from typing import Any, Callable, Literal, Union
+from collections.abc import Callable, ItemsView, Iterator
+from typing import Any, Literal, Union
 
 from .re_pattern import (
     CN_CHAR,
