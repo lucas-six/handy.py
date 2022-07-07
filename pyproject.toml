@@ -49,7 +49,7 @@ doc = [
 [project.urls]
 Documentation = "https://github.com/leven-cn/handy.py"
 Source = "https://github.com/leven-cn/handy.py"
-Home = "https://github.com/leven-cn/handy.py"
+Home = "https://pypi.org/project/handy-utils/"
 
 [tool.flit.module]
 name = "handy"
