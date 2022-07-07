@@ -6,7 +6,7 @@ The original script is from CPython.
 
 import re
 import tkinter
-from typing import Pattern, Union
+from typing import Union
 
 
 class ReTK:
@@ -85,7 +85,7 @@ class ReTK:
         self.regex_display.bind('<Key>', self.re_compile)
         self.string_display.bind('<Key>', self.re_evaluate)
 
-        self.compiled: Union[Pattern[str], None] = None
+        self.compiled: Union[re.Pattern[str], None] = None
         self.re_compile()
 
         tags = self.regex_display.bindtags()
@@ -147,7 +147,7 @@ class ReTK:
             self.string_display.tag_remove('hit0', '1.0', tkinter.END)
         except tkinter.TclError:
             pass
-        self.group_list.delete(0, tkinter.END)
+        self.group_list.delete(0, tkinter.END)  # type: ignore
         if not self.compiled:
             return
         self.string_display.tag_configure('hit', background=self.string_hit_background)
@@ -169,11 +169,13 @@ class ReTK:
             plast = f'1.0 + {last} chars'
             self.string_display.tag_add(tag, pfirst, plast)
             if nmatches == 0:
-                self.string_display.yview_pickplace(pfirst)
+                self.string_display.yview_pickplace(pfirst)  # type: ignore
                 groups = list(m.groups())
                 groups.insert(0, m.group())
                 for i in range(len(groups)):
-                    self.group_list.insert(tkinter.END, f'{i:=2}: {groups[i]}')
+                    self.group_list.insert(  # type: ignore
+                        tkinter.END, f'{i:=2}: {groups[i]}'
+                    )
             nmatches = nmatches + 1
             if self.showvar.get() == 'first':
                 break
