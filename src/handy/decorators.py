@@ -3,7 +3,7 @@
 import logging
 import time
 from functools import wraps
-from typing import Any, Callable, Union
+from typing import Any, Callable, Type, Union
 
 from . import LOGGER_NAME
 
@@ -28,7 +28,7 @@ def attrs(**_kwargs: Any) -> Any:
 
 
 def accepts(
-    *types: Union[Any, tuple[Any, ...]],
+    *types: Union[Type[object], tuple[Type[object], ...]],
 ) -> Any:
     """Enforce function argument type.
 
@@ -57,7 +57,7 @@ def accepts(
     return _decorator
 
 
-def returns(*rtype: Any) -> Any:
+def returns(*rtype: Type[object]) -> Any:
     """Enforce function return types.
 
     Usage:
@@ -81,7 +81,7 @@ def returns(*rtype: Any) -> Any:
     return _decorator
 
 
-def singleton(cls: Any):
+def singleton(cls: Type[object]):
     """Define a class with a singleton instance.
 
     Usage:
@@ -90,7 +90,7 @@ def singleton(cls: Any):
         class MyClass:
             pass
     """
-    instances: dict[Any, object] = {}
+    instances: dict[Type[object], object] = {}
 
     def getinstance() -> object:
         if cls not in instances:
