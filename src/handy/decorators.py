@@ -2,8 +2,9 @@
 
 import logging
 import time
+from collections.abc import Callable
 from functools import wraps
-from typing import Any, Callable, Type, Union
+from typing import Any, Type, Union
 
 from . import LOGGER_NAME
 

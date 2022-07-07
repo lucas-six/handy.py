@@ -1,5 +1,6 @@
 import logging
-from typing import Any, Callable, Literal, Union
+from collections.abc import Callable
+from typing import Any, Literal, Union
 
 import pytest
 
