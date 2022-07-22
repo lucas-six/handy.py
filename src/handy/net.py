@@ -3,18 +3,24 @@
 import logging
 import os
 import socket
-from abc import ABCMeta
+from abc import ABCMeta, abstractmethod
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, Callable, Final, Optional, Union
+from typing import Any, Callable, ClassVar, Final, Optional, Union
 
 
 class BaseServer(metaclass=ABCMeta):
 
     # system/platform information
     _uname = os.uname()
-    os_name = _uname.sysname
-    os_version = _uname.release
-    os_version_info = tuple(os_version.split('.'))
+    os_name: ClassVar[str] = _uname.sysname
+    os_version: ClassVar[str] = _uname.release
+    os_version_info: ClassVar[tuple[str, ...]] = tuple(os_version.split('.'))
+
+    if os_name == 'Linux':
+        assert socket.SOMAXCONN == int(
+            Path('/proc/sys/net/core/somaxconn').read_text().strip()
+        )
 
     def __init__(
         self,
@@ -24,6 +30,8 @@ class BaseServer(metaclass=ABCMeta):
         self.logger = logging.getLogger(logger_name)
         self.socket: Optional[socket.SocketType]
         self.reuse_address = reuse_address
+        self.max_recv_buf_size: Union[int, None] = None
+        self.max_send_buf_size: Union[int, None] = None
 
     def bind(self):
         assert self.socket is not None
@@ -42,6 +50,46 @@ class BaseServer(metaclass=ABCMeta):
     def close(self):
         if self.socket is not None:
             self.socket.close()
+
+    @abstractmethod
+    def get_max_buf_size(self):
+        pass
+
+    def set_buffer_size(self):
+        """Set recv/send buffer size."""
+        assert self.socket is not None
+
+        self.get_max_buf_size()
+
+        for pair in (
+            (self.recv_buf_size, self.max_recv_buf_size, 'recv', socket.SO_RCVBUF),
+            (self.send_buf_size, self.max_send_buf_size, 'send', socket.SO_SNDBUF),
+        ):
+            if pair[0] is not None:
+                if pair[1] and pair[0] > pair[1]:
+                    self.logger.warning(
+                        f'invalid {pair[2]} buf ({pair[0]}): '
+                        f'exceeds max value ({pair[1]}).'
+                    )
+                    # kernel do this already!
+                    # pair[0] = min(pair[0], pair[1])
+                self.socket.setsockopt(socket.SOL_SOCKET, pair[3], pair[0])
+
+    def show_info(self, extras: Optional[Iterable[str]] = None):
+        assert self.socket is not None
+
+        server_info_msgs = [
+            'running',
+            f'server address: {self.server_address}',
+            f'os: {self.os_name} ({self.os_version})',
+            f'reuse address: {self.reuse_address}',
+            f'recv buffer size: {self.recv_buf_size} (max={self.max_recv_buf_size})',
+            f'send buffer size: {self.send_buf_size} (max={self.max_send_buf_size})',
+        ]
+        if extras:
+            server_info_msgs.extend(extras)
+
+        self.logger.debug('\n'.join(server_info_msgs))
 
     def __enter__(self):
         return self
@@ -138,6 +186,9 @@ class BaseTCPServer(BaseServer):
     def get_max_buf_size(self):
         assert self.socket is not None
 
+        # Get max TCP (IPv4) recv/send buffer size in system (Linux)
+        # - read(recv): /proc/sys/net/ipv4/tcp_rmem
+        # - write(send): /proc/sys/net/ipv4/tcp_wmem
         if self.os_name == 'Linux' and self.socket.family is socket.AF_INET:
             self.max_recv_buf_size = int(
                 Path('/proc/sys/net/ipv4/tcp_rmem')
@@ -154,63 +205,23 @@ class BaseTCPServer(BaseServer):
                 .strip()
             )
 
-    def set_buffer_size(self):
+    def run(self):
         assert self.socket is not None
 
-        self.get_max_buf_size()
-
-        if self.recv_buf_size is not None:
-            if hasattr(self, 'max_recv_buf_size'):
-                self.recv_buf_size = min(self.recv_buf_size, self.max_recv_buf_size)
-            self.socket.setsockopt(
-                socket.SOL_SOCKET, socket.SO_RCVBUF, self.recv_buf_size
-            )
-
-        if self.send_buf_size is not None:
-            if hasattr(self, 'max_send_buf_size'):
-                self.send_buf_size = min(self.send_buf_size, self.max_send_buf_size)
-            self.socket.setsockopt(
-                socket.SOL_SOCKET, socket.SO_SNDBUF, self.send_buf_size
-            )
-
-    def show_info(self):
-        assert self.socket is not None
-
-        server_info_msgs = [
-            f'running on {self.server_address}',
-            f'os: {self.os_name} ({self.os_version})',
-            f'reuse address: {self.reuse_address}',
-            f'accept queue size: {self.accept_queue_size} (max={socket.SOMAXCONN})',
-            f'recv buffer size: {self.recv_buf_size}',
-            f'send buffer size: {self.send_buf_size}',
+        extra_info = [
+            f'accept queue size: {self.accept_queue_size} (max={socket.SOMAXCONN})'
         ]
-
         if self.os_name == 'Linux' and self.os_version_info >= (
             '2',
             '2',
             '0',
         ):  # Linux 2.2+
-            assert socket.SOMAXCONN == int(
-                Path('/proc/sys/net/core/somaxconn').read_text().strip()
-            )
             if self.socket.family is socket.AF_INET:
                 max_syn_queue_size = int(
                     Path('/proc/sys/net/ipv4/tcp_max_syn_backlog').read_text().strip()
                 )
-                server_info_msgs.append(f'max syn queue size: {max_syn_queue_size}')
-
-        if hasattr(self, 'max_recv_buf_size'):
-            server_info_msgs.append(
-                f'max receive buffer size: {self.max_recv_buf_size}'
-            )
-        if hasattr(self, 'max_send_buf_size'):
-            server_info_msgs.append(f'max send buffer size: {self.max_send_buf_size}')
-
-        self.logger.debug('\n'.join(server_info_msgs))
-
-    def run(self):
-        assert self.socket is not None
-        self.show_info()
+                extra_info.append(f'max syn queue size: {max_syn_queue_size}')
+        self.show_info(extra_info)
 
         while True:
             try:
@@ -253,49 +264,16 @@ class BaseUDPServer(BaseServer):
     def get_max_buf_size(self):
         assert self.socket is not None
 
-        if self.os_name == 'Linux' and self.socket.family is socket.AF_INET:
+        # Get max UDP recv/send buffer size in system (Linux)
+        # - read(recv): /proc/sys/net/core/rmem_max
+        # - write(send): /proc/sys/net/core/wmem_max
+        if self.os_name == 'Linux':
             self.max_recv_buf_size = int(
-                Path('/proc/sys/net/ipv4/tcp_rmem')
-                .read_text()
-                .strip()
-                .split()[2]
-                .strip()
+                Path('/proc/sys/net/core/rmem_max').read_text().strip()
             )
             self.max_send_buf_size = int(
-                Path('/proc/sys/net/ipv4/tcp_wmem')
-                .read_text()
-                .strip()
-                .split()[2]
-                .strip()
+                Path('/proc/sys/net/core/wmem_max').read_text().strip()
             )
-
-    def show_info(self):
-        assert self.socket is not None
-
-        server_info_msgs = [
-            f'running on {self.server_address}',
-            f'reuse address: {self.reuse_address}',
-            f'receive buffer size: {self.recv_buf_size}',
-            f'send buffer size: {self.send_buf_size}',
-        ]
-
-        if self.os_name == 'Linux' and self.os_version_info >= (
-            '2',
-            '2',
-            '0',
-        ):  # Linux 2.2+
-            assert socket.SOMAXCONN == int(
-                Path('/proc/sys/net/core/somaxconn').read_text().strip()
-            )
-
-        if hasattr(self, 'max_recv_buf_size'):
-            server_info_msgs.append(
-                f'max receive buffer size: {self.max_recv_buf_size}'
-            )
-        if hasattr(self, 'max_send_buf_size'):
-            server_info_msgs.append(f'max send buffer size: {self.max_send_buf_size}')
-
-        self.logger.debug('\n'.join(server_info_msgs))
 
     def run(self):
         assert self.socket is not None
@@ -477,6 +455,7 @@ class UDPServerIPv4(BaseUDPServer):
         self.server_address = server_address
 
         try:
+            self.set_buffer_size()
             self.bind()
         except OSError as err:
             self.logger.error(err)
