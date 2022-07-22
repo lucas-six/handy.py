@@ -7,8 +7,6 @@ from abc import ABCMeta
 from pathlib import Path
 from typing import Any, Callable, Final, Optional, Union
 
-from typing_extensions import Self
-
 
 class BaseServer(metaclass=ABCMeta):
 
