@@ -489,7 +489,7 @@ class UDPServerIPv4(BaseUDPServer):
 def echo_request_tcp(
     request: socket.socket,
     client_address: tuple[str, int],
-    server: BaseTCPServer,
+    server: Union[TCPServer, TCPServerIPv4],
 ):
     raw_data = request.recv(1024)
     if raw_data:
@@ -501,7 +501,7 @@ def echo_request_tcp(
         server.logger.debug(f'no data from {client_address}')
 
 
-def echo_request_udp(server: BaseUDPServer):
+def echo_request_udp(server: UDPServerIPv4):
     assert server.socket is not None
     raw_data, client_address = server.socket.recvfrom(1024)
     if raw_data:
