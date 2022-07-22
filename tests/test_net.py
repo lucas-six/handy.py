@@ -26,18 +26,16 @@ class TestNet:
         assert server.socket_type is socket.SOCK_STREAM
         sock = server.socket
         assert sock is not None
-        if socket.has_ipv6:
+        if socket.has_dualstack_ipv6():
             assert sock.family in (socket.AF_INET6, socket.AF_INET)
         else:
             assert sock.family is socket.AF_INET
         if os_name == 'Linux':
-            assert hasattr(server, 'max_recv_buf_size')
-            assert hasattr(server, 'max_send_buf_size')
             assert isinstance(server.max_recv_buf_size, int)
             assert isinstance(server.max_send_buf_size, int)
         else:
-            assert not hasattr(server, 'max_receive_buf_size')
-            assert not hasattr(server, 'max_send_buf_size')
+            assert server.max_recv_buf_size is None
+            assert server.max_send_buf_size is None
         server.close()
 
     def test_TCPServerIPv4(self, os_name: str, port: int):
@@ -47,13 +45,11 @@ class TestNet:
         assert sock is not None
         assert sock.family is socket.AF_INET
         if os_name == 'Linux':
-            assert hasattr(server, 'max_recv_buf_size')
-            assert hasattr(server, 'max_send_buf_size')
             assert isinstance(server.max_recv_buf_size, int)
             assert isinstance(server.max_send_buf_size, int)
         else:
-            assert not hasattr(server, 'max_receive_buf_size')
-            assert not hasattr(server, 'max_send_buf_size')
+            assert server.max_recv_buf_size is None
+            assert server.max_send_buf_size is None
         server.close()
 
     def test_UDPServerIPv4(self, os_name: str, port: int):
@@ -62,4 +58,10 @@ class TestNet:
         sock = server.socket
         assert sock is not None
         assert sock.family is socket.AF_INET
+        if os_name == 'Linux':
+            assert isinstance(server.max_recv_buf_size, int)
+            assert isinstance(server.max_send_buf_size, int)
+        else:
+            assert server.max_recv_buf_size is None
+            assert server.max_send_buf_size is None
         server.close()
