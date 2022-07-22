@@ -27,7 +27,7 @@ class TestNet:
         sock = server.socket
         assert sock is not None
         if socket.has_ipv6:
-            assert sock.family is socket.AF_INET6
+            assert sock.family in (socket.AF_INET6, socket.AF_INET)
         else:
             assert sock.family is socket.AF_INET
         if os_name == 'Linux':
