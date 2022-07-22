@@ -15,7 +15,7 @@ class BaseServer(metaclass=ABCMeta):
     _uname = os.uname()
     os_name: ClassVar[str] = _uname.sysname
     os_version: ClassVar[str] = _uname.release
-    os_version_info: ClassVar[tuple[str, str, str]] = tuple(os_version.split('.'))
+    os_version_info: ClassVar[tuple[str, ...]] = tuple(os_version.split('.'))
 
     if os_name == 'Linux':
         assert socket.SOMAXCONN == int(
