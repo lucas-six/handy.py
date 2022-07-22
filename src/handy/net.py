@@ -530,5 +530,5 @@ if __name__ == '__main__':
         server.run()
 
     # Port 0 means to select an arbitrary unused port
-    with UDPServerIPv4(('', 0), echo_request_udp) as server:
-        server.run()
+    # with UDPServerIPv4(('', 0), echo_request_udp) as server:
+    #     server.run()
