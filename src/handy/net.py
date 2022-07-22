@@ -1,22 +1,59 @@
-"""TCP Server."""
+"""Networking."""
 
 import logging
 import os
 import socket
+from abc import ABCMeta
 from pathlib import Path
 from typing import Any, Callable, Final, Optional, Union
 
 from typing_extensions import Self
 
 
-class BaseTCPServer:
-    socket_type: Final[socket.SocketKind] = socket.SOCK_STREAM
+class BaseServer(metaclass=ABCMeta):
 
     # system/platform information
     _uname = os.uname()
     os_name = _uname.sysname
     os_version = _uname.release
     os_version_info = tuple(os_version.split('.'))
+
+    def __init__(
+        self,
+        reuse_address: bool,
+        logger_name: str,
+    ):
+        self.logger = logging.getLogger(logger_name)
+        self.socket: Optional[socket.SocketType]
+        self.reuse_address = reuse_address
+
+    def bind(self):
+        assert self.socket is not None
+
+        if self.reuse_address:
+            # The `SO_REUSEADDR` flag tells the kernel to reuse a local socket in
+            # `TIME_WAIT` state, without waiting for its natural timeout to expire.
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+        self.socket.bind(self.server_address)
+        self.server_address = self.socket.getsockname()
+
+        self.recv_buf_size = self.socket.getsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF)
+        self.send_buf_size = self.socket.getsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF)
+
+    def close(self):
+        if self.socket is not None:
+            self.socket.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args: Any):
+        self.close()
+
+
+class BaseTCPServer(BaseServer):
+    socket_type: Final[socket.SocketKind] = socket.SOCK_STREAM
 
     def __init__(
         self,
@@ -27,10 +64,9 @@ class BaseTCPServer:
         send_buf_size: Optional[int],
         logger_name: str,
     ):
-        self.logger = logging.getLogger(logger_name)
-        self.socket: Optional[socket.SocketType]
+        super().__init__(reuse_address, logger_name)
         self.handle_request = handle_request
-        self.reuse_address = reuse_address
+
         if accept_queue_size is None:
             self.accept_queue_size = None
         else:
@@ -38,35 +74,6 @@ class BaseTCPServer:
 
         self.recv_buf_size = recv_buf_size
         self.send_buf_size = send_buf_size
-
-    def bind(self):
-        assert self.socket is not None
-
-        if self.reuse_address:
-            # The `SO_REUSEADDR` flag tells the kernel to reuse a local socket in
-            # `TIME_WAIT` state, without waiting for its natural timeout to expire.
-            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
-        self.get_max_buf_size()
-
-        if self.recv_buf_size is not None:
-            if hasattr(self, 'max_recv_buf_size'):
-                self.recv_buf_size = min(self.recv_buf_size, self.max_recv_buf_size)
-            self.socket.setsockopt(
-                socket.SOL_SOCKET, socket.SO_RCVBUF, self.recv_buf_size
-            )
-        self.recv_buf_size = self.socket.getsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF)
-
-        if self.send_buf_size is not None:
-            if hasattr(self, 'max_send_buf_size'):
-                self.send_buf_size = min(self.send_buf_size, self.max_send_buf_size)
-            self.socket.setsockopt(
-                socket.SOL_SOCKET, socket.SO_SNDBUF, self.send_buf_size
-            )
-        self.send_buf_size = self.socket.getsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF)
-
-        self.socket.bind(self.server_address)
-        self.server_address = self.socket.getsockname()
 
     def listen(self):
         # Because of the 3-way handshake used by TCP, an incoming connection goes
@@ -130,10 +137,6 @@ class BaseTCPServer:
         else:
             self.socket.listen(self.accept_queue_size)
 
-    def close(self):
-        if self.socket is not None:
-            self.socket.close()
-
     def get_max_buf_size(self):
         assert self.socket is not None
 
@@ -153,14 +156,34 @@ class BaseTCPServer:
                 .strip()
             )
 
+    def set_buffer_size(self):
+        assert self.socket is not None
+
+        self.get_max_buf_size()
+
+        if self.recv_buf_size is not None:
+            if hasattr(self, 'max_recv_buf_size'):
+                self.recv_buf_size = min(self.recv_buf_size, self.max_recv_buf_size)
+            self.socket.setsockopt(
+                socket.SOL_SOCKET, socket.SO_RCVBUF, self.recv_buf_size
+            )
+
+        if self.send_buf_size is not None:
+            if hasattr(self, 'max_send_buf_size'):
+                self.send_buf_size = min(self.send_buf_size, self.max_send_buf_size)
+            self.socket.setsockopt(
+                socket.SOL_SOCKET, socket.SO_SNDBUF, self.send_buf_size
+            )
+
     def show_info(self):
         assert self.socket is not None
 
         server_info_msgs = [
             f'running on {self.server_address}',
+            f'os: {self.os_name} ({self.os_version})',
             f'reuse address: {self.reuse_address}',
             f'accept queue size: {self.accept_queue_size} (max={socket.SOMAXCONN})',
-            f'receive buffer size: {self.recv_buf_size}',
+            f'recv buffer size: {self.recv_buf_size}',
             f'send buffer size: {self.send_buf_size}',
         ]
 
@@ -211,18 +234,87 @@ class BaseTCPServer:
                 request.close()  # type: ignore
                 self.logger.debug(f'client closed: {client_address}')
 
-    def __enter__(self):
-        return self
 
-    def __exit__(self, *args: Any):
-        self.close()
+class BaseUDPServer(BaseServer):
+    socket_type: Final[socket.SocketKind] = socket.SOCK_DGRAM
+
+    def __init__(
+        self,
+        handle_request: Callable[[Self], None],
+        reuse_address: bool,
+        recv_buf_size: Optional[int],
+        send_buf_size: Optional[int],
+        logger_name: str,
+    ):
+        super().__init__(reuse_address, logger_name)
+        self.handle_request = handle_request
+
+        self.recv_buf_size = recv_buf_size
+        self.send_buf_size = send_buf_size
+
+    def get_max_buf_size(self):
+        assert self.socket is not None
+
+        if self.os_name == 'Linux' and self.socket.family is socket.AF_INET:
+            self.max_recv_buf_size = int(
+                Path('/proc/sys/net/ipv4/tcp_rmem')
+                .read_text()
+                .strip()
+                .split()[2]
+                .strip()
+            )
+            self.max_send_buf_size = int(
+                Path('/proc/sys/net/ipv4/tcp_wmem')
+                .read_text()
+                .strip()
+                .split()[2]
+                .strip()
+            )
+
+    def show_info(self):
+        assert self.socket is not None
+
+        server_info_msgs = [
+            f'running on {self.server_address}',
+            f'reuse address: {self.reuse_address}',
+            f'receive buffer size: {self.recv_buf_size}',
+            f'send buffer size: {self.send_buf_size}',
+        ]
+
+        if self.os_name == 'Linux' and self.os_version_info >= (
+            '2',
+            '2',
+            '0',
+        ):  # Linux 2.2+
+            assert socket.SOMAXCONN == int(
+                Path('/proc/sys/net/core/somaxconn').read_text().strip()
+            )
+
+        if hasattr(self, 'max_recv_buf_size'):
+            server_info_msgs.append(
+                f'max receive buffer size: {self.max_recv_buf_size}'
+            )
+        if hasattr(self, 'max_send_buf_size'):
+            server_info_msgs.append(f'max send buffer size: {self.max_send_buf_size}')
+
+        self.logger.debug('\n'.join(server_info_msgs))
+
+    def run(self):
+        assert self.socket is not None
+        self.show_info()
+
+        while True:
+            try:
+                self.handle_request(self)
+            except (OSError, RuntimeError) as err:
+                self.logger.error(err)
 
 
 class TCPServer(BaseTCPServer):
     """Extend the Python standard TCP (both IPv4 & IPv6) server.
 
     Usage:
-        from handy import TCPServer, echo_request
+        from handy.net import TCPServer, echo_request
 
         with TCPServer(None, 9999, echo_request) as srv:
             srv.run()
@@ -274,6 +366,7 @@ class TCPServer(BaseTCPServer):
             self.server_address = server_address
 
             try:
+                self.set_buffer_size()
                 self.bind()
                 self.listen()
             except OSError:
@@ -303,9 +396,9 @@ class TCPServerIPv4(BaseTCPServer):
     """Extend the Python standard TCP (IPv4) server.
 
     Usage:
-        from handy import TCPServerIPv4, echo_request
+        from handy.net import TCPServerIPv4, echo_request
 
-        with TCPServerIPv4(('', 9999), echo_request) as srv:
+        with TCPServerIPv4(('', 0), echo_request) as srv:
             srv.run()
     """
 
@@ -339,6 +432,7 @@ class TCPServerIPv4(BaseTCPServer):
         self.server_address = server_address
 
         try:
+            self.set_buffer_size()
             self.bind()
             self.listen()
         except OSError as err:
@@ -347,7 +441,52 @@ class TCPServerIPv4(BaseTCPServer):
             raise
 
 
-def echo_request(
+class UDPServerIPv4(BaseUDPServer):
+    """Extend the Python standard UDP (IPv4) server.
+
+    Usage:
+        from handy.net import UDPServerIPv4, echo_request
+
+        with UDPServerIPv4(('', 0), echo_request) as srv:
+            srv.run()
+    """
+
+    def __init__(
+        self,
+        server_address: tuple[str, int],
+        handle_request: Callable[[Any], None],
+        reuse_address: bool = True,
+        recv_buf_size: Union[int, None] = None,
+        send_buf_size: Union[int, None] = None,
+        logger_name: str = 'handy.UDPServerIPv4',
+    ):
+        super().__init__(
+            handle_request,
+            reuse_address,
+            recv_buf_size,
+            send_buf_size,
+            logger_name,
+        )
+        self.socket = socket.socket(socket.AF_INET, self.socket_type)
+
+        host, _ = server_address
+        if host in ('localhost', '127.0.0.1'):
+            self.host_address = socket.INADDR_LOOPBACK
+        elif host in ('', '0.0.0.0'):
+            self.host_address = socket.INADDR_ANY
+        elif host == '<broadcast>':
+            self.host_address = socket.INADDR_BROADCAST
+        self.server_address = server_address
+
+        try:
+            self.bind()
+        except OSError as err:
+            self.logger.error(err)
+            self.close()
+            raise
+
+
+def echo_request_tcp(
     request: socket.socket,
     client_address: tuple[str, int],
     server: BaseTCPServer,
@@ -362,6 +501,18 @@ def echo_request(
         server.logger.debug(f'no data from {client_address}')
 
 
+def echo_request_udp(server: BaseUDPServer):
+    assert server.socket is not None
+    raw_data, client_address = server.socket.recvfrom(1024)
+    if raw_data:
+        data = raw_data.decode('utf-8')
+        server.logger.debug(f'received data from {client_address}: {data}')
+        server.socket.sendto(raw_data, client_address)
+        server.logger.debug(f'sending data to {client_address}: {data}')
+    else:
+        server.logger.debug(f'no data from {client_address}')
+
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
 
@@ -371,9 +522,13 @@ if __name__ == '__main__':
     #     echo_request,
     #     address_family=socket.AF_INET,
     #     no_dns=True,
-    # ) as srv:
-    #     srv.run()
+    # ) as server:
+    #     server.run()
 
     # Port 0 means to select an arbitrary unused port
-    with TCPServerIPv4(('localhost', 0), echo_request) as src:
-        src.run()
+    with TCPServerIPv4(('', 0), echo_request_tcp) as server:
+        server.run()
+
+    # Port 0 means to select an arbitrary unused port
+    with UDPServerIPv4(('', 0), echo_request_udp) as server:
+        server.run()
