@@ -240,7 +240,7 @@ class BaseUDPServer(BaseServer):
 
     def __init__(
         self,
-        handle_request: Callable[[Self], None],
+        handle_request: Callable[[BaseServer], None],
         reuse_address: bool,
         recv_buf_size: Optional[int],
         send_buf_size: Optional[int],
@@ -324,7 +324,7 @@ class TCPServer(BaseTCPServer):
         self,
         host: Union[str, None],
         port: Union[int, str, None],
-        handle_request: Callable[[socket.socket, tuple[str, int], Self], None],
+        handle_request: Callable[[socket.socket, tuple[str, int], BaseServer], None],
         address_family: socket.AddressFamily = socket.AF_UNSPEC,
         address_info: socket.AddressInfo = socket.AI_PASSIVE,
         no_dns: bool = False,
@@ -405,7 +405,7 @@ class TCPServerIPv4(BaseTCPServer):
     def __init__(
         self,
         server_address: tuple[str, int],
-        handle_request: Callable[[socket.socket, tuple[str, int], Self], None],
+        handle_request: Callable[[socket.socket, tuple[str, int], BaseServer], None],
         reuse_address: bool = True,
         accept_queue_size: Optional[int] = None,
         recv_buf_size: Union[int, None] = None,
@@ -454,7 +454,7 @@ class UDPServerIPv4(BaseUDPServer):
     def __init__(
         self,
         server_address: tuple[str, int],
-        handle_request: Callable[[Any], None],
+        handle_request: Callable[[BaseServer], None],
         reuse_address: bool = True,
         recv_buf_size: Union[int, None] = None,
         send_buf_size: Union[int, None] = None,
@@ -489,7 +489,7 @@ class UDPServerIPv4(BaseUDPServer):
 def echo_request_tcp(
     request: socket.socket,
     client_address: tuple[str, int],
-    server: Union[TCPServer, TCPServerIPv4],
+    server: BaseServer,
 ):
     raw_data = request.recv(1024)
     if raw_data:
@@ -501,7 +501,7 @@ def echo_request_tcp(
         server.logger.debug(f'no data from {client_address}')
 
 
-def echo_request_udp(server: UDPServerIPv4):
+def echo_request_udp(server: BaseServer):
     assert server.socket is not None
     raw_data, client_address = server.socket.recvfrom(1024)
     if raw_data:
