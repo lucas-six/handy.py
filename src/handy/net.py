@@ -44,6 +44,11 @@ class BaseServer(metaclass=ABCMeta):
         self.socket.bind(self.server_address)
         self.server_address = self.socket.getsockname()
 
+        self.post_bind()
+
+    def post_bind(self):
+        assert self.socket is not None
+
         self.recv_buf_size = self.socket.getsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF)
         self.send_buf_size = self.socket.getsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF)
 
@@ -258,6 +263,7 @@ class BaseUDPServer(BaseServer):
         super().__init__(reuse_address, logger_name)
         self.handle_request = handle_request
 
+        # Recv/Send buffer size
         self.recv_buf_size = recv_buf_size
         self.send_buf_size = send_buf_size
 
@@ -284,6 +290,9 @@ class BaseUDPServer(BaseServer):
                 self.handle_request(self)
             except (OSError, RuntimeError) as err:
                 self.logger.error(err)
+
+    def post_bind(self):
+        super().post_bind()
 
 
 class TCPServer(BaseTCPServer):
@@ -432,8 +441,8 @@ class UDPServerIPv4(BaseUDPServer):
         server_address: tuple[str, int],
         handle_request: Callable[[BaseServer], None],
         reuse_address: bool = True,
-        recv_buf_size: Union[int, None] = None,
-        send_buf_size: Union[int, None] = None,
+        recv_buf_size: Optional[int] = None,
+        send_buf_size: Optional[int] = None,
         logger_name: str = 'handy.UDPServerIPv4',
     ):
         super().__init__(
@@ -503,9 +512,9 @@ if __name__ == '__main__':
     #     server.run()
 
     # Port 0 means to select an arbitrary unused port
-    with TCPServerIPv4(('', 0), echo_request_tcp) as server:
-        server.run()
+    # with TCPServerIPv4(('', 0), echo_request_tcp) as server:
+    #     server.run()
 
     # Port 0 means to select an arbitrary unused port
-    # with UDPServerIPv4(('', 0), echo_request_udp) as server:
-    #     server.run()
+    with UDPServerIPv4(('', 0), echo_request_udp) as server:
+        server.run()
