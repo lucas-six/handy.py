@@ -48,7 +48,7 @@ def accepts(
         @wraps(_func)
         def wrapper(*args: Any, **kwargs: Any):
             """wrapper function."""
-            for (a, t) in zip(args, types):
+            for a, t in zip(args, types):
                 if not isinstance(a, t):
                     raise TypeError(f'arg {a} ({type(a)}) does not match {t}')
             return _func(*args, **kwargs)
