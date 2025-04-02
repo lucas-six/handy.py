@@ -369,13 +369,13 @@ class TestHandy:
             ('a-中文-c.中-文', False),
             ('a-中文-c.中文-', False),
             (
-                chr(random.randint(ord('\u4E00'), ord('\u9FA5') + 1))
+                chr(random.randint(ord('\u4e00'), ord('\u9fa5') + 1))
                 * (re_pattern.DOMAIN_NAMES[re_pattern.LANGUAGE.CN][1] - len('.org'))
                 + '.org',
                 True,
             ),
             (
-                chr(random.randint(ord('\u4E00'), ord('\u9FA5') + 1))
+                chr(random.randint(ord('\u4e00'), ord('\u9fa5') + 1))
                 * (re_pattern.DOMAIN_NAMES[re_pattern.LANGUAGE.CN][1] - len('.org') + 1)
                 + '.org',
                 False,
